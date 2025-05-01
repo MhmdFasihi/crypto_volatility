@@ -610,3 +610,52 @@ st.markdown("""
     <p>Crypto Volatility Analysis Dashboard | Built with Streamlit</p>
 </div>
 """, unsafe_allow_html=True)
+
+def main():
+    """Main entry point for the Streamlit app."""
+    st.set_page_config(
+        page_title="Crypto Volatility Analysis",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    # Run the app
+    run_app()
+
+def run_app():
+    """Run the Streamlit application."""
+    # Custom CSS
+    st.markdown("""
+    <style>
+        .stTabs [data-baseweb="tab-list"] button [data-testid="stMarkdownContainer"] p {
+            font-size: 16px;
+        }
+        .metric-card {
+            background-color: #f0f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .insight-box {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #0066cc;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Rest of your existing app code here
+    # Initialize session state
+    if 'data' not in st.session_state:
+        st.session_state.data = None
+    if 'selected_ticker' not in st.session_state:
+        st.session_state.selected_ticker = TICKERS[0]
+
+    # Title and description
+    st.title("🚀 Crypto Volatility Analysis Dashboard")
+    # ... rest of your existing code ...
+
+if __name__ == "__main__":
+    main()

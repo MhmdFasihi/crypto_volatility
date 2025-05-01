@@ -1,0 +1,388 @@
+
+[     UTC     ] Logs for mhmdfasihi-crypto-volatility-srcdashboard-7eu5wq.streamlit.app/
+────────────────────────────────────────────────────────────────────────────────────────
+[22:53:08] 🚀 Starting up repository: 'crypto_volatility', branch: 'main', main module: 'src/dashboard.py'
+[22:53:08] 🐙 Cloning repository...
+[22:53:10] 🐙 Cloning into '/mount/src/crypto_volatility'...
+Warning: Permanently added the ED25519 host key for IP address '140.82.116.4' to the list of known hosts.
+
+[22:53:10] 🐙 Cloned repository!
+[22:53:10] 🐙 Pulling code changes from Github...
+[22:53:11] 📦 Processing dependencies...
+
+──────────────────────────────────────── uv ───────────────────────────────────────────
+
+Using uv pip install.
+Using Python 3.12.10 environment at /home/adminuser/venv
+Resolved 84 packages in 2.49s
+Prepared 84 packages in 21.36s
+Installed 84 packages in 1.69s
+ [2025-05-01 22:53:37.332008] + absl-py==2.2.2
+ + altair==5.5.0
+ + astunparse==1.6.3
+ + attrs==25.3.0
+ + beautifulsoup4==4.13.4
+ + blinker==1.9.0
+ + cachetools==5.5.2
+ + certifi==2025.4.26
+ + charset-normalizer==3.4.1
+ + click==8.1.8
+ +[2025-05-01 22:53:37.333316]  dtw-python==1.5.1
+ + flatbuffers==25.2.10
+ + frozendict==2.4.6
+ + gast==0.6.0
+ + gitdb==4.0.12[2025-05-01 22:53:37.333902] 
+ + gitpython==3.1.44
+ + google-pasta==0.2.0
+ + grpcio[2025-05-01 22:53:37.334185] ==1.71.0
+ + h5py==3.13.0
+ + hmmlearn==0.3.2
+ + html5lib==1.1[2025-05-01 22:53:37.334388] 
+ + idna==[2025-05-01 22:53:37.334517] 3.10
+ + iniconfig==2.1.0
+ + jinja2==3.1.6
+ + joblib==1.4.2
+ + jsonschema==4.23.0
+ + jsonschema-specifications==2025.4.1
+ + keras==3.9.2
+ + libclang==18.1.1
+ + lxml==5.4.0
+ + markdown==3.8
+ + markdown-it-py==3.0.0
+ + markupsafe==3.0.2
+ + mdurl==0.1.2
+ + ml-dtypes==0.3.2
+ + multitasking==0.0.11
+ + namex==0.0.9
+ + narwhals==1.37.1
+ + numpy==1.26.4
+ + opt-einsum==3.4.0
+ + optree==0.15.0
+ + packaging==24.2
+ + pandas==2.2.2
+ + peewee==3.18.1
+ + pillow==10.4.0
+ + platformdirs==4.3.7
+ + plotly==5.22.0
+ + pluggy==1.5.0
+ + protobuf==4.25.7
+ + pyarrow==20.0.0
+ + pydeck==0.9.1
+ + pygments==2.19.1
+ + pytest==8.2.0
+ + python-dateutil==[2025-05-01 22:53:37.334758] 2.9.0.post0
+ + pytz==2025.2
+ + referencing==0.36.2
+ + requests==2.32.3
+ + rich==13.9.4
+ + rpds-py==0.24.0[2025-05-01 22:53:37.334950] 
+ + scikit-learn==1.5.0
+ + scipy==1.15.2
+ + setuptools==80.1.0[2025-05-01 22:53:37.335125] 
+ + six==1.17.0
+ + smmap==5.0.2
+ + soupsieve==2.7[2025-05-01 22:53:37.335295] 
+ + streamlit==1.36.0
+ + tenacity==8.5.0
+ [2025-05-01 22:53:37.335477] + tensorboard==2.16.2
+ + tensorboard-data-server==0.7.2
+ + tensorflow==2.16.1
+ + termcolor==3.1.0[2025-05-01 22:53:37.335829] 
+ + threadpoolctl==3.6.0
+ + toml==0.10.2
+ + tornado==6.4.2
+ + typing-extensions[2025-05-01 22:53:37.336040] ==4.13.2
+ + tzdata==2025.2
+ + urllib3==2.4.0
+ +[2025-05-01 22:53:37.336480]  watchdog==4.0.2
+ + webencodings==0.5.1
+ + websockets==[2025-05-01 22:53:37.336684] 12.0
+ + werkzeug==3.1.3
+ + wheel==0.45.1
+ + wrapt==1.17.2
+ + yfinance==0.2.40
+Checking if Streamlit is installed
+Found Streamlit version 1.36.0 in the environment
+Installing rich for an improved exception logging
+Using uv pip install.
+Using Python 3.12.10 environment at /home/adminuser/venv
+Audited 1 package in 5ms
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+[22:53:39] 🐍 Python dependencies were installed from /mount/src/crypto_volatility/requirements.txt using uv.
+Check if streamlit is installed
+Streamlit is already installed
+[22:53:41] 📦 Processed dependencies!
+
+
+
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from src.data_acquisition import get_data, get_combined_volatility_dat  
+     16 from src.preprocessing import (                                         
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ModuleNotFoundError: No module named 'src'
+[22:57:44] 🐙 Pulling code changes from Github...
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from src.data_acquisition import get_data, get_combined_volatility_dat  
+     16 from src.preprocessing import (                                         
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+[22:57:46] 📦 Processing dependencies...
+[22:57:46] 📦 Processed dependencies!
+[22:57:47] 🔄 Updated app!
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+[22:58:10] ❗️ 
+2025-05-01 22:58:10.496 503 GET /script-health-check (127.0.0.1) 7.41ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:15.447 503 GET /script-health-check (127.0.0.1) 61.69ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:20.462 503 GET /script-health-check (127.0.0.1) 5.30ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:25.385 503 GET /script-health-check (127.0.0.1) 6.59ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:30.572 503 GET /script-health-check (127.0.0.1) 220.48ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:35.409 503 GET /script-health-check (127.0.0.1) 6.11ms
+2025-05-01 22:58:40.459 503 GET /script-health-check (127.0.0.1) 1.64ms
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:45.367 503 GET /script-health-check (127.0.0.1) 7.70ms
+[22:58:46] 🐙 Pulling code changes from Github...
+[22:58:47] 📦 Processing dependencies...
+
+──────────────────────────────────────── uv ───────────────────────────────────────────
+
+Using uv pip install.
+error: Couldn't parse requirement in `requirements.txt` at position 207
+  Caused by[2025-05-01 22:58:48.316144] : no such comparison operator "=", must be one of ~= == != <= >= < > ===
+python_version = "3.10"
+               ^^^^^^^^
+Checking if Streamlit is installed
+Found Streamlit version 1.36.0 in the environment
+Installing rich for an improved exception logging
+Using uv pip install.
+Using Python 3.12.10 environment at /home/adminuser/venv
+Audited 1 package in 3ms
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+──────────────────────────────────────── pip ───────────────────────────────────────────
+
+Using standard pip install.
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:50.598 503 GET /script-health-check (127.0.0.1) 62.38ms
+ERROR: Invalid requirement: 'python_version = "3.10"' (from line 14 of /mount/src/crypto_volatility/requirements.txt)
+Hint: = is not a valid operator. Did you mean == ?
+
+[notice] A new release of pip is available: 24.0 -> 25.1
+[notice] To update, run: pip install --upgrade pip
+Checking if Streamlit is installed
+Found Streamlit version 1.36.0 in the environment
+Installing rich for an improved exception logging
+Using standard pip install.
+Collecting rich>=10.14.0
+  Downloading rich-14.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=10.14.0)
+  Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=10.14.0)
+  Downloading pygments-2.19.1-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=10.14.0)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading rich-14.0.0-py3-none-any.whl (243 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.2/243.2 kB 13.0 MB/s eta 0:00:00[2025-05-01 22:58:53.936033] 
+Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.5/87.5 kB 121.9 MB/s eta 0:00:00[2025-05-01 22:58:53.949446] 
+Downloading pygments-2.19.1-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 78.9 MB/s eta 0:00:00[2025-05-01 22:58:53.978515] 
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Installing collected packages: pygments, mdurl, markdown-it-py, rich
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.19.1
+    Uninstalling Pygments-2.19.1:
+      Successfully uninstalled Pygments-2.19.1
+────────────────────── Traceback (most recent call last) ───────────────────────
+  /home/adminuser/venv/lib/python3.12/site-packages/streamlit/runtime/scriptru  
+  nner/script_runner.py:589 in _run_script                                      
+                                                                                
+  /mount/src/crypto_volatility/src/dashboard.py:15 in <module>                  
+                                                                                
+     12 import os                                                               
+     13 from datetime import datetime, timedelta                                
+     14                                                                         
+  ❱  15 from .data_acquisition import get_data, get_combined_volatility_data,   
+     16 from .preprocessing import (                                            
+     17 │   calculate_returns,                                                  
+     18 │   calculate_volatility,                                               
+────────────────────────────────────────────────────────────────────────────────
+ImportError: attempted relative import with no known parent package
+2025-05-01 22:58:55.522 503 GET /script-health-check (127.0.0.1) 64.89ms
+  Attempting uninstall: mdurl
+    Found existing installation: mdurl 0.1.2
+    Uninstalling mdurl-0.1.2:
+      Successfully uninstalled mdurl-0.1.2
+  Attempting uninstall: markdown-it-py
+    Found existing installation: markdown-it-py 3.0.0
+    Uninstalling markdown-it-py-3.0.0:
+      Successfully uninstalled markdown-it-py-3.0.0
+  Attempting uninstall: rich
+    Found existing installation: rich 13.9.4
+    Uninstalling rich-13.9.4:
+      Successfully uninstalled rich-13.9.4
+Successfully installed markdown-it-py-3.0.0 mdurl-0.1.2 pygments-2.19.1 rich-14.0.0
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+streamlit 1.36.0 requires rich<14,>=10.14.0, but you have rich 14.0.0 which is incompatible.
+
+[notice] A new release of pip is available: 24.0 -> 25.1
+[notice] To update, run: pip install --upgrade pip
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+[22:58:57] ❗️ installer returned a non-zero exit code
