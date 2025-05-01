@@ -1,0 +1,12 @@
+yfinance==0.2.40
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.5.0
+tensorflow==2.16.1
+hmmlearn==0.3.2
+dtw-python==1.5.1
+streamlit==1.36.0
+plotly==5.22.0
+joblib==1.4.2
+pytest==8.2.0
+websockets==12.0
