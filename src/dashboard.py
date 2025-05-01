@@ -12,8 +12,8 @@ from plotly.subplots import make_subplots
 import os
 from datetime import datetime, timedelta
 
-from src.data_acquisition import get_data, get_combined_volatility_data, DeribitAPI
-from src.preprocessing import (
+from .data_acquisition import get_data, get_combined_volatility_data, DeribitAPI
+from .preprocessing import (
     calculate_returns, 
     calculate_volatility,
     calculate_advanced_volatility_metrics,
