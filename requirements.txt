@@ -1,12 +1,20 @@
-yfinance==0.2.40
-pandas==2.2.2
-numpy==1.26.4
-scikit-learn==1.5.0
-tensorflow==2.16.1
+streamlit>=1.36.0
+pandas>=2.2.2
+numpy>=1.26.4
+yfinance>=0.2.40
+scikit-learn>=1.5.0
+tensorflow>=2.16.1
+plotly>=5.22.0
+python-dateutil>=2.9.0
+pytz>=2025.2
+requests>=2.32.3
+setuptools>=80.1.0
+
+# Python version
+python_version = "3.10"
+
 hmmlearn==0.3.2
 dtw-python==1.5.1
-streamlit==1.36.0
-plotly==5.22.0
 joblib==1.4.2
 pytest==8.2.0
 websockets==12.0
