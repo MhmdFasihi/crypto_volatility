@@ -213,6 +213,7 @@ def test_error_handling():
     """Test error handling in anomaly detection functions."""
     # Test with empty data
     empty_data = pd.DataFrame()
+    # Should handle missing column gracefully without error
     result = detect_anomalies_zscore(empty_data)
     assert result.empty
     

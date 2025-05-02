@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple, Optional
 import logging
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from config import HMM_STATES, VOL_WINDOW, RANDOM_SEED
+from src.config import HMM_STATES, VOL_WINDOW, RANDOM_SEED
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -111,9 +111,9 @@ def get_state_statistics(model: GaussianHMM,
         std_transformed = std * scaler.scale_
         
         state_stats[i] = {
-            'mean': means[i, 0],
-            'std': std_transformed[0],
-            'stationary_prob': model.get_stationary_distribution()[i]
+            'mean': float(means[i, 0]),
+            'std': float(std_transformed[0]),
+            'stationary_prob': float(model.get_stationary_distribution()[i])
         }
     
     return state_stats
