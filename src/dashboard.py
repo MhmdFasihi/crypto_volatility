@@ -613,12 +613,6 @@ st.markdown("""
 
 def main():
     """Main entry point for the Streamlit app."""
-    st.set_page_config(
-        page_title="Crypto Volatility Analysis",
-        page_icon="📊",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
     # Run the app
     run_app()
 
