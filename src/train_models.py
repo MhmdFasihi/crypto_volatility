@@ -12,8 +12,8 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from src.data_acquisition import get_data, get_combined_volatility_data
-from src.preprocessing import (
+from data_acquisition import get_data, get_combined_volatility_data
+from preprocessing import (
     calculate_returns, 
     calculate_volatility, 
     calculate_advanced_volatility_metrics,

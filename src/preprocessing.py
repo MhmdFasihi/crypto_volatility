@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from typing import Union, List, Optional
 import logging
-from src.config import VOL_WINDOW, ANNUALIZATION_FACTOR
+from config import VOL_WINDOW, ANNUALIZATION_FACTOR
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
