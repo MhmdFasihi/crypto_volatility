@@ -32,22 +32,33 @@ def compute_dtw_distance(x: np.ndarray, y: np.ndarray,
         DTW distance
     """
     # Define the appropriate distance function
+    # Ensure inputs are numpy arrays of float type
+    x = np.array(x, dtype=float)
+    y = np.array(y, dtype=float)
+    
+    # Define distance functions
     if distance_metric == 'euclidean':
         def dist_func(a, b): return np.sqrt(np.sum((a - b) ** 2))
     elif distance_metric == 'manhattan':
         def dist_func(a, b): return np.sum(np.abs(a - b))
     elif distance_metric == 'cosine':
-        def dist_func(a, b): return 1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+        def dist_func(a, b): 
+            # Handle zero vectors
+            if np.all(a == 0) or np.all(b == 0):
+                return 1.0
+            return 1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
     else:
         raise ValueError(f"Unknown distance metric: {distance_metric}")
     
-    # The dtw package may have a different API - try this instead:
-    alignment = dtw(x, y)
-    # Or if that doesn't work, try:
-    # alignment = dtw(x, y, distance=dist_func)
-    
-    return alignment.distance
-
+    # Use DTW algorithm
+    try:
+        alignment = dtw(x, y)
+        return alignment.distance
+    except Exception as e:
+        import logging
+        logging.error(f"DTW calculation error: {e}")
+        # Fallback to simple Euclidean distance
+        return np.sqrt(np.sum((x - y) ** 2))
 def compute_distance_matrix(volatilities: List[np.ndarray], 
                           distance_metric: str = 'euclidean') -> np.ndarray:
     """

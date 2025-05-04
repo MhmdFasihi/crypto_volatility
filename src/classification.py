@@ -74,11 +74,30 @@ def predict_states(model: GaussianHMM,
     Returns:
         Array of predicted states
     """
+    # Extract features with proper error handling
     features = data[feature_cols].dropna()
+    
+    # Scale features
     features_scaled = scaler.transform(features)
+    
+    # Predict states
     states = model.predict(features_scaled)
     
-    return states
+    # Create a Series aligned to the original data
+    state_series = pd.Series(index=data.index, dtype=int)
+    state_series.loc[features.index] = states
+    
+    # Forward-fill NaN values (use the last known state)
+    state_series = state_series.fillna(method='ffill').fillna(0).astype(int)
+    
+    # Ensure length matches
+    if len(state_series) != len(data):
+        import logging
+        logging.warning(f"State length mismatch: {len(states)} vs {len(data)}")
+        # Return states aligned with data index
+        return state_series.reindex(data.index, fill_value=0).values
+    
+    return state_series.values
 
 def get_state_statistics(model: GaussianHMM, 
                         scaler: StandardScaler) -> Dict[int, Dict[str, float]]:

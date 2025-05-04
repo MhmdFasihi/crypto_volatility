@@ -1,3 +1,6 @@
+
+
+
 # src/forecasting.py
 """
 Volatility forecasting module implementing MLP and RNN models.
@@ -219,28 +222,31 @@ def evaluate_model(model: Any, X_test: np.ndarray, y_test: np.ndarray,
     
     return metrics
 
+
+from pathlib import Path
+
 def save_model(model: Any, scaler: StandardScaler, filename: str, is_rnn: bool = False):
     """
     Save the trained model and scaler.
-    
+
     Args:
         model: Trained model
         scaler: Feature scaler
         filename: File path to save (without extension)
         is_rnn: Whether the model is an RNN
     """
-    os.makedirs(MODEL_DIR, exist_ok=True)
-    
-    if is_rnn:
-        model.save(os.path.join(MODEL_DIR, f"{filename}.h5"))
-    else:
-        joblib.dump(model, os.path.join(MODEL_DIR, f"{filename}.pkl"))
-    
-    # Save scaler
-    joblib.dump(scaler, os.path.join(MODEL_DIR, f"{filename}_scaler.pkl"))
-    
-    logger.info(f"Model saved to {MODEL_DIR}/{filename}")
+    model_dir = Path(MODEL_DIR)
+    model_dir.mkdir(parents=True, exist_ok=True)
 
+    if is_rnn:
+        model.save(model_dir / f"{filename}.h5")
+    else:
+        joblib.dump(model, model_dir / f"{filename}.pkl")
+
+    # Save scaler
+    joblib.dump(scaler, model_dir / f"{filename}_scaler.pkl")
+
+    logger.info(f"Model saved to {model_dir / filename}")
 def load_model(filename: str, is_rnn: bool = False) -> Tuple[Any, StandardScaler]:
     """
     Load a trained model and scaler.

@@ -1,0 +1,6 @@
+{
+  "BTC-USD": {
+    "status": "failed",
+    "error": "unsupported operand type(s) for /: 'str' and 'str'"
+  }
+}

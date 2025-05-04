@@ -12,8 +12,8 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from data_acquisition import get_data, get_combined_volatility_data
-from preprocessing import (
+from src.data_acquisition import get_data, get_combined_volatility_data
+from src.preprocessing import (
     calculate_returns, 
     calculate_volatility, 
     calculate_advanced_volatility_metrics,
@@ -39,6 +39,11 @@ from src.config import (
     DEFAULT_START_DATE, DEFAULT_END_DATE,
     RANDOM_SEED, TEST_SIZE, MODEL_DIR
 )
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 # Set up logging
 logging.basicConfig(
@@ -367,3 +372,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
