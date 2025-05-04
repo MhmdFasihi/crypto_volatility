@@ -1,6 +1,3 @@
-
-
-
 # src/forecasting.py
 """
 Volatility forecasting module implementing MLP and RNN models.
@@ -18,16 +15,26 @@ import numpy as np
 import pandas as pd
 import joblib
 import os
-import logging
 from typing import Tuple, Dict, Any, Optional, List
-from src.config import (
-    LAGS, MLP_HIDDEN_LAYERS, MLP_MAX_ITER, RNN_UNITS, 
-    RNN_EPOCHS, RNN_BATCH_SIZE, RANDOM_SEED, TEST_SIZE,
-    MODEL_DIR
-)
+from src.config import config
+from src.logger import get_logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Get logger
+logger = get_logger(__name__)
+
+# Configuration values from config
+LAGS = config.get('model.forecasting.lags')
+MLP_HIDDEN_LAYERS = tuple(config.get('model.forecasting.mlp.hidden_layers'))
+MLP_MAX_ITER = config.get('model.forecasting.mlp.max_iter')
+RNN_UNITS = config.get('model.forecasting.rnn.units')
+RNN_EPOCHS = config.get('model.forecasting.rnn.epochs')
+RNN_BATCH_SIZE = config.get('model.forecasting.rnn.batch_size')
+RANDOM_SEED = config.get('model.random_state')
+TEST_SIZE = config.get('model.forecasting.test_size')
+MODEL_DIR = config.get_path('models_dir')
+
+# Create model directory if it doesn't exist
+os.makedirs(MODEL_DIR, exist_ok=True)
 
 def prepare_data(data: pd.DataFrame, target_col: str = 'Volatility', 
                 lags: int = LAGS) -> Tuple[pd.DataFrame, pd.Series]:
@@ -221,7 +228,6 @@ def evaluate_model(model: Any, X_test: np.ndarray, y_test: np.ndarray,
     logger.info(f"Model evaluation - MAE: {metrics['mae']:.4f}, RMSE: {metrics['rmse']:.4f}, R2: {metrics['r2']:.4f}")
     
     return metrics
-
 
 from pathlib import Path
 

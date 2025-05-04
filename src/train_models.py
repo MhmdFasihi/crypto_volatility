@@ -37,7 +37,7 @@ from src.anomaly_detection import (
 from src.config import (
     TICKERS, VOL_WINDOW, LAGS, HMM_STATES,
     DEFAULT_START_DATE, DEFAULT_END_DATE,
-    RANDOM_SEED, TEST_SIZE, MODEL_DIR
+    RANDOM_SEED, TEST_SIZE, MODELS_DIR as MODEL_DIR
 )
 
 # Set up logging

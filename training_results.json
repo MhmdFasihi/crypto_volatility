@@ -1,8 +1,69 @@
 {
   "BTC-USD": {
     "ticker": "BTC-USD",
-    "timestamp": "2025-05-04T19:44:05.402767",
-    "status": "failed",
-    "reason": "no_data"
+    "timestamp": "2025-05-05T00:59:36.050905",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03287295260802381,
+        "mse": 0.002008358907721165,
+        "rmse": 0.04481471753476937,
+        "r2": 0.6734666749624786,
+        "mape": 5.701258625028864
+      },
+      "model_path": "mlp_BTC-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.02739118322927647,
+        "mse": 0.001688330365824623,
+        "rmse": 0.041089297460830634,
+        "r2": 0.7254991993736464,
+        "mape": 4.580689976751215
+      },
+      "model_path": "lstm_BTC-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.02834886030807989,
+        "mse": 0.0017717161911678804,
+        "rmse": 0.04209175918357274,
+        "r2": 0.7119417367579493,
+        "mape": 4.765277083004447
+      },
+      "model_path": "gru_BTC-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_BTC-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.6155164859624859,
+          "std": 0.06283199025546983,
+          "stationary_prob": 0.23338821922641542
+        },
+        "1": {
+          "mean": 0.6149918299418102,
+          "std": 0.06363000159941241,
+          "stationary_prob": 0.24040214472600185
+        },
+        "2": {
+          "mean": 0.4233712137817131,
+          "std": 0.05977747167063077,
+          "stationary_prob": 0.5262096360475826
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
   }
 }

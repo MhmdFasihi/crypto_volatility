@@ -4,58 +4,95 @@ Data acquisition module for fetching cryptocurrency data using yfinance.
 
 import yfinance as yf
 import pandas as pd
-from typing import Union, List
+from typing import Union, List, Optional
 import asyncio
 import websockets
 import json
 from datetime import datetime, timedelta
-import logging
+import time
+from functools import wraps
 import os
+from .logger import get_logger
+import numpy as np
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
-def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') -> pd.DataFrame:
+def retry_on_failure(max_retries: int = 3, delay: int = 1):
     """
-    Fetch historical price data for a given ticker.
+    Decorator for retrying functions on failure.
     
     Args:
-        ticker: Crypto ticker (e.g., 'BTC-USD')
-        start_date: Start date (e.g., '2020-01-01')
-        end_date: End date (e.g., '2025-05-01')
-        interval: Data interval (e.g., '1d' for daily)
+        max_retries: Maximum number of retry attempts
+        delay: Delay between retries in seconds
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while retries < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    retries += 1
+                    if retries == max_retries:
+                        logger.error(f"Failed after {max_retries} attempts: {str(e)}")
+                        raise
+                    logger.warning(f"Attempt {retries} failed: {str(e)}. Retrying in {delay} seconds...")
+                    time.sleep(delay)
+            return None
+        return wrapper
+    return decorator
+
+@retry_on_failure(max_retries=3)
+def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') -> pd.DataFrame:
+    """
+    Fetch historical data for a crypto ticker.
+    
+    Args:
+        ticker: Crypto ticker
+        start_date: Start date
+        end_date: End date
+        interval: Data interval
     
     Returns:
-        DataFrame with price data
+        DataFrame with historical data
     """
     try:
-        logger.info(f"Fetching data for {ticker} from {start_date} to {end_date}")
+        # Convert dates to datetime
+        start = pd.to_datetime(start_date)
+        end = pd.to_datetime(end_date)
         
-        # Using fixed past dates for testing
-        import datetime
-        today = datetime.datetime.now()
-        fixed_end_date = today.strftime('%Y-%m-%d')
-        fixed_start_date = (today - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
+        if start > end:
+            raise ValueError("Start date must be before end date")
         
-        # Use fixed dates first for debugging
-        logger.info(f"Using historical date range: {fixed_start_date} to {fixed_end_date}")
-        data = yf.download(ticker, start=fixed_start_date, end=fixed_end_date, interval=interval)
+        # Fetch data
+        data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
         
         if data.empty:
             logger.warning(f"No data found for ticker {ticker}")
             return pd.DataFrame()
         
-        # Ensure numeric columns are numeric
-        for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
+        # Convert data to float type
+        numeric_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        for col in numeric_columns:
             if col in data.columns:
-                data[col] = pd.to_numeric(data[col], errors='coerce')
-            
+                try:
+                    data[col] = data[col].astype(float)
+                except Exception as e:
+                    logger.warning(f"Error converting {col} to float: {str(e)}")
+                    data[col] = data[col].replace('', np.nan).astype(float)
+        
+        # Validate data
+        if data.isnull().any().any():
+            logger.warning(f"Missing values found in data for {ticker}")
+        
         logger.info(f"Successfully fetched {len(data)} rows for {ticker}")
         return data
     except Exception as e:
-        logger.error(f"Error fetching data for {ticker}: {e}")
-        return pd.DataFrame()
+        logger.error(f"Error fetching data for {ticker}: {str(e)}", exc_info=True)
+        raise
 
+@retry_on_failure(max_retries=3)
 def get_multiple_tickers(tickers: List[str], start_date: str, end_date: str, interval: str = '1d') -> dict:
     """
     Fetch data for multiple tickers.
@@ -71,11 +108,16 @@ def get_multiple_tickers(tickers: List[str], start_date: str, end_date: str, int
     """
     data_dict = {}
     for ticker in tickers:
-        data = get_data(ticker, start_date, end_date, interval)
-        if not data.empty:
-            data_dict[ticker] = data
+        try:
+            data = get_data(ticker, start_date, end_date, interval)
+            if not data.empty:
+                data_dict[ticker] = data
+        except Exception as e:
+            logger.error(f"Failed to fetch data for {ticker}: {str(e)}")
+            continue
     return data_dict
 
+@retry_on_failure(max_retries=3)
 def validate_ticker(ticker: str) -> bool:
     """
     Validate if a ticker exists and has data.
@@ -89,9 +131,11 @@ def validate_ticker(ticker: str) -> bool:
     try:
         test_data = yf.Ticker(ticker).info
         return bool(test_data)
-    except:
+    except Exception as e:
+        logger.error(f"Error validating ticker {ticker}: {str(e)}")
         return False
 
+@retry_on_failure(max_retries=3)
 def get_ticker_info(ticker: str) -> dict:
     """
     Get detailed information about a ticker.
@@ -106,7 +150,7 @@ def get_ticker_info(ticker: str) -> dict:
         ticker_obj = yf.Ticker(ticker)
         return ticker_obj.info
     except Exception as e:
-        logger.error(f"Error getting info for {ticker}: {e}")
+        logger.error(f"Error getting info for {ticker}: {str(e)}")
         return {}
 
 def save_data_to_csv(data: pd.DataFrame, filename: str, data_dir: str = 'data/') -> None:
@@ -118,11 +162,14 @@ def save_data_to_csv(data: pd.DataFrame, filename: str, data_dir: str = 'data/')
         filename: Name of the file
         data_dir: Directory to save the file
     """
-    import os
-    os.makedirs(data_dir, exist_ok=True)
-    filepath = os.path.join(data_dir, filename)
-    data.to_csv(filepath)
-    logger.info(f"Data saved to {filepath}")
+    try:
+        os.makedirs(data_dir, exist_ok=True)
+        filepath = os.path.join(data_dir, filename)
+        data.to_csv(filepath)
+        logger.info(f"Data saved to {filepath}")
+    except Exception as e:
+        logger.error(f"Error saving data to {filename}: {str(e)}")
+        raise
 
 def load_data_from_csv(filename: str, data_dir: str = 'data/') -> pd.DataFrame:
     """
@@ -135,31 +182,39 @@ def load_data_from_csv(filename: str, data_dir: str = 'data/') -> pd.DataFrame:
     Returns:
         DataFrame with loaded data
     """
-    import os
-    filepath = os.path.join(data_dir, filename)
-    if os.path.exists(filepath):
-        data = pd.read_csv(filepath, index_col=0, parse_dates=True)
-        logger.info(f"Data loaded from {filepath}")
-        return data
-    else:
-        logger.error(f"File not found: {filepath}")
-        return pd.DataFrame()
+    try:
+        filepath = os.path.join(data_dir, filename)
+        if os.path.exists(filepath):
+            data = pd.read_csv(filepath, index_col=0, parse_dates=True)
+            logger.info(f"Data loaded from {filepath}")
+            return data
+        else:
+            logger.error(f"File not found: {filepath}")
+            return pd.DataFrame()
+    except Exception as e:
+        logger.error(f"Error loading data from {filename}: {str(e)}")
+        raise
 
 class DeribitAPI:
     """
     Class to handle Deribit API interactions for implied volatility data.
     """
     
-    def __init__(self, test_mode: bool = True):
+    def __init__(self, api_key: Optional[str] = None, api_secret: Optional[str] = None, test_mode: bool = True):
         """
         Initialize Deribit API client.
         
         Args:
+            api_key: API key for authentication
+            api_secret: API secret for authentication
             test_mode: If True, use test.deribit.com, else use www.deribit.com
         """
         self.base_url = 'wss://test.deribit.com/ws/api/v2' if test_mode else 'wss://www.deribit.com/ws/api/v2'
+        self.api_key = api_key
+        self.api_secret = api_secret
         logger.info(f"Initialized Deribit API with URL: {self.base_url}")
     
+    @retry_on_failure(max_retries=3)
     async def call_api(self, msg: dict) -> dict:
         """
         Make an API call to Deribit.
@@ -170,13 +225,18 @@ class DeribitAPI:
         Returns:
             API response as dictionary
         """
-        async with websockets.connect(self.base_url) as websocket:
-            await websocket.send(json.dumps(msg))
-            response = await websocket.recv()
-            return json.loads(response)
+        try:
+            async with websockets.connect(self.base_url) as websocket:
+                await websocket.send(json.dumps(msg))
+                response = await websocket.recv()
+                return json.loads(response)
+        except Exception as e:
+            logger.error(f"Error calling Deribit API: {str(e)}")
+            raise
     
+    @retry_on_failure(max_retries=3)
     def get_trades_by_currency_and_time(self, currency: str, start_timestamp: int, 
-                                       end_timestamp: int, count: int = 1000) -> dict:
+                                      end_timestamp: int, count: int = 1000) -> dict:
         """
         Get trades for a currency within a time range.
         
@@ -204,9 +264,10 @@ class DeribitAPI:
         try:
             return asyncio.get_event_loop().run_until_complete(self.call_api(msg))
         except Exception as e:
-            logger.error(f"Error calling Deribit API: {e}")
-            return {"error": str(e)}
+            logger.error(f"Error getting trades: {str(e)}")
+            raise
     
+    @retry_on_failure(max_retries=3)
     def get_implied_volatility_data(self, currency: str, days_back: int = 30) -> pd.DataFrame:
         """
         Get implied volatility data for a currency.
@@ -218,79 +279,40 @@ class DeribitAPI:
         Returns:
             DataFrame with IV data
         """
-        end_timestamp = int(datetime.now().timestamp() * 1000)
-        start_timestamp = int((datetime.now() - timedelta(days=days_back)).timestamp() * 1000)
-        
         try:
+            end_timestamp = int(datetime.now().timestamp() * 1000)
+            start_timestamp = int((datetime.now() - timedelta(days=days_back)).timestamp() * 1000)
+            
             response = self.get_trades_by_currency_and_time(
                 currency=currency,
                 start_timestamp=start_timestamp,
                 end_timestamp=end_timestamp,
-                count=10000  # Get more trades to ensure coverage
+                count=10000
             )
             
             if 'result' in response and 'trades' in response['result']:
                 trades = response['result']['trades']
                 if trades:
-                    # Convert to DataFrame
                     df = pd.DataFrame(trades)
-                    # Convert timestamp to datetime
                     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
                     df.set_index('timestamp', inplace=True)
                     
-                    # Select relevant columns
                     iv_df = df[['instrument_name', 'price', 'mark_price', 'iv', 'index_price', 'direction', 'amount']]
                     
-                    # Ensure iv column is numeric
-                    iv_df['iv'] = pd.to_numeric(iv_df['iv'], errors='coerce')
-                    iv_df['price'] = pd.to_numeric(iv_df['price'], errors='coerce')
-                    iv_df['mark_price'] = pd.to_numeric(iv_df['mark_price'], errors='coerce')
-                    iv_df['index_price'] = pd.to_numeric(iv_df['index_price'], errors='coerce')
-                    iv_df['amount'] = pd.to_numeric(iv_df['amount'], errors='coerce')
+                    for col in ['iv', 'price', 'mark_price', 'index_price', 'amount']:
+                        iv_df[col] = pd.to_numeric(iv_df[col], errors='coerce')
                     
-                    logger.info(f"Retrieved {len(iv_df)} IV data points for {currency}")
+                    logger.info(f"Successfully fetched IV data for {currency}")
                     return iv_df
                 else:
                     logger.warning(f"No trades found for {currency}")
                     return pd.DataFrame()
             else:
-                logger.error(f"Unexpected response format: {response}")
+                logger.error(f"Invalid response format for {currency}")
                 return pd.DataFrame()
-                
         except Exception as e:
-            logger.error(f"Error getting IV data for {currency}: {e}")
-            return pd.DataFrame()
-    
-    def get_aggregated_iv_by_expiry(self, currency: str, days_back: int = 30) -> pd.DataFrame:
-        """
-        Get aggregated implied volatility by expiry date.
-        
-        Args:
-            currency: Currency (e.g., 'BTC', 'ETH')
-            days_back: Number of days to look back
-        
-        Returns:
-            DataFrame with aggregated IV by expiry
-        """
-        iv_data = self.get_implied_volatility_data(currency, days_back)
-        
-        if iv_data.empty:
-            return pd.DataFrame()
-        
-        # Extract expiry date from instrument name
-        iv_data['expiry'] = iv_data['instrument_name'].apply(
-            lambda x: pd.to_datetime(x.split('-')[1], format='%d%b%y') if '-' in x else pd.NaT
-        )
-        
-        # Aggregate by expiry and timestamp
-        aggregated = iv_data.groupby(['expiry', pd.Grouper(freq='1H')]).agg({
-            'iv': 'mean',
-            'price': 'mean',
-            'index_price': 'mean',
-            'amount': 'sum'
-        }).reset_index()
-        
-        return aggregated
+            logger.error(f"Error getting IV data for {currency}: {str(e)}")
+            raise
 
 def get_combined_volatility_data(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
     """
