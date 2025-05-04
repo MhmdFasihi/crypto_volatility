@@ -199,20 +199,29 @@ def main():
             
             # Price chart
             try:
-                fig_price = go.Figure()
-                fig_price.add_trace(go.Scatter(
-                    x=data.index, 
-                    y=data['Close'],
-                    name='Price',
-                    line=dict(color='#1f77b4')
-                ))
-                fig_price.update_layout(
-                    title=f"{ticker} Price History",
-                    xaxis_title="Date",
-                    yaxis_title="Price ($)",
-                    template="plotly_white"
-                )
-                st.plotly_chart(fig_price, use_container_width=True)
+                if data is None or data.empty or 'Close' not in data.columns:
+                    st.warning("No price data available for the selected ticker and date range.")
+                else:
+                    # Ensure index is DateTimeIndex
+                    if not isinstance(data.index, pd.DatetimeIndex):
+                        try:
+                            data.index = pd.to_datetime(data.index)
+                        except Exception as e:
+                            st.error(f"Error converting index to datetime: {str(e)}")
+                    fig_price = go.Figure()
+                    fig_price.add_trace(go.Scatter(
+                        x=data.index,
+                        y=data['Close'],
+                        name='Price',
+                        line=dict(color='#1f77b4')
+                    ))
+                    fig_price.update_layout(
+                        title=f"{ticker} Price History",
+                        xaxis_title="Date",
+                        yaxis_title="Price ($)",
+                        template="plotly_white"
+                    )
+                    st.plotly_chart(fig_price, use_container_width=True)
             except Exception as e:
                 st.error(f"Error rendering price chart: {str(e)}")
             
@@ -286,16 +295,20 @@ def main():
             
             if st.button("Generate Forecast"):
                 try:
-                    # Load model
-                    model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
-                    
+                    # Try to load model
+                    try:
+                        model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
+                    except FileNotFoundError:
+                        st.warning(f"Model not found. Training {model_type} model for {ticker}...")
+                        with st.spinner(f"Training {model_type} model for {ticker}..."):
+                            from src.train_models import train_forecasting_model
+                            train_forecasting_model(ticker, model_type.lower(), data)
+                        model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
                     # Prepare data
                     X, y = prepare_data(data, lags=LAGS)
-                    
                     if len(X) > 0:
                         # Get recent data for forecasting
                         recent_data = X.iloc[-1].values
-                        
                         # Generate forecast
                         if model_type != "MLP":
                             recent_data_reshaped = recent_data.reshape(1, -1, 1)
@@ -310,17 +323,14 @@ def main():
                                 is_rnn=False, 
                                 n_ahead=n_forecast_days
                             )
-                        
                         # Create forecast dates
                         last_date = data.index[-1]
                         forecast_dates = pd.date_range(
                             start=last_date + timedelta(days=1),
                             periods=n_forecast_days
                         )
-                        
                         # Plot forecast
                         fig_forecast = go.Figure()
-                        
                         # Historical volatility
                         fig_forecast.add_trace(go.Scatter(
                             x=data.index[-60:],
@@ -328,7 +338,6 @@ def main():
                             name='Historical',
                             line=dict(color='#1f77b4')
                         ))
-                        
                         # Forecast
                         fig_forecast.add_trace(go.Scatter(
                             x=forecast_dates,
@@ -336,7 +345,6 @@ def main():
                             name='Forecast',
                             line=dict(color='#ff7f0e', dash='dash')
                         ))
-                        
                         fig_forecast.update_layout(
                             title=f"{model_type} Volatility Forecast",
                             xaxis_title="Date",
@@ -344,20 +352,14 @@ def main():
                             template="plotly_white"
                         )
                         st.plotly_chart(fig_forecast, use_container_width=True)
-                        
                         # Forecast table
                         forecast_df = pd.DataFrame({
                             'Date': forecast_dates,
                             'Forecasted Volatility': forecast
                         })
                         st.dataframe(forecast_df.style.format({'Forecasted Volatility': '{:.2%}'}))
-                        
                     else:
                         st.warning("Insufficient data for forecasting")
-                        
-                except FileNotFoundError:
-                    st.error(f"Model not found. Please train the {model_type} model first.")
-                    st.info("You can train models using: python src/train_models.py --ticker " + ticker + " --model " + model_type.lower())
                 except Exception as e:
                     st.error(f"Error generating forecast: {str(e)}")
         
@@ -565,18 +567,21 @@ def main():
                         )
                         
                         if cluster_mapping:
-                            # Show all tickers for each cluster
-                            try:
-                                st.subheader("Tickers in Each Cluster")
-                                for cluster_id in sorted(set(cluster_mapping.values())):
-                                    tickers_in_cluster = [ticker for ticker, cluster in cluster_mapping.items() if cluster == cluster_id]
-                                    st.markdown(f"**Cluster {cluster_id}:** {', '.join(tickers_in_cluster)}")
-                                # Show cluster characteristics
-                                st.subheader("Cluster Characteristics")
-                                cluster_chars = get_cluster_characteristics(TICKERS, cluster_mapping, start_date_str, end_date_str)
+                            # Show all tickers for each cluster as a DataFrame
+                            st.subheader("Tickers in Each Cluster")
+                            cluster_df = pd.DataFrame([
+                                {"Cluster": cluster_id, "Tickers": ', '.join([ticker for ticker, cluster in cluster_mapping.items() if cluster == cluster_id])}
+                                for cluster_id in sorted(set(cluster_mapping.values()))
+                            ])
+                            st.dataframe(cluster_df)
+
+                            # Show cluster characteristics as a DataFrame
+                            st.subheader("Cluster Characteristics")
+                            cluster_chars = get_cluster_characteristics(TICKERS, cluster_mapping, start_date_str, end_date_str)
+                            if isinstance(cluster_chars, pd.DataFrame):
+                                st.dataframe(cluster_chars)
+                            else:
                                 st.write(cluster_chars)
-                            except Exception as e:
-                                st.error(f"Error in clustering: {str(e)}")
                         else:
                             st.warning("Insufficient data for clustering analysis")
                         
