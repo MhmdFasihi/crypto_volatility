@@ -31,17 +31,8 @@ def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') 
     try:
         logger.info(f"Fetching data for {ticker} from {start_date} to {end_date}")
         
-        # Convert string dates to datetime if they aren't already
-        if isinstance(start_date, str):
-            start_date = pd.to_datetime(start_date)
-        if isinstance(end_date, str):
-            end_date = pd.to_datetime(end_date)
-            
-        # Format dates correctly for yfinance
-        start_str = start_date.strftime('%Y-%m-%d')
-        end_str = end_date.strftime('%Y-%m-%d')
-        
-        data = yf.download(ticker, start=start_str, end=end_str, interval=interval)
+        # Use the dates directly - yfinance can handle string dates
+        data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
         
         if data.empty:
             logger.warning(f"No data found for ticker {ticker}")
