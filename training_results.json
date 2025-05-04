@@ -1,15 +1,15 @@
 {
   "BTC-USD": {
     "ticker": "BTC-USD",
-    "timestamp": "2025-05-05T00:59:36.050905",
+    "timestamp": "2025-05-05T01:17:14.561745",
     "mlp": {
       "status": "success",
       "metrics": {
-        "mae": 0.03287295260802381,
-        "mse": 0.002008358907721165,
-        "rmse": 0.04481471753476937,
-        "r2": 0.6734666749624786,
-        "mape": 5.701258625028864
+        "mae": 0.024175350334913793,
+        "mse": 0.001373219869302644,
+        "rmse": 0.03705698138411498,
+        "r2": 0.7933467719945393,
+        "mape": 4.147040265055747
       },
       "model_path": "mlp_BTC-USD"
     },
@@ -20,22 +20,22 @@
     "lstm": {
       "status": "success",
       "metrics": {
-        "mae": 0.02739118322927647,
-        "mse": 0.001688330365824623,
-        "rmse": 0.041089297460830634,
-        "r2": 0.7254991993736464,
-        "mape": 4.580689976751215
+        "mae": 0.02986300776544323,
+        "mse": 0.001785591945567646,
+        "rmse": 0.04225626516349553,
+        "r2": 0.7312896880530197,
+        "mape": 4.961357453498782
       },
       "model_path": "lstm_BTC-USD"
     },
     "gru": {
       "status": "success",
       "metrics": {
-        "mae": 0.02834886030807989,
-        "mse": 0.0017717161911678804,
-        "rmse": 0.04209175918357274,
-        "r2": 0.7119417367579493,
-        "mape": 4.765277083004447
+        "mae": 0.030865355878633368,
+        "mse": 0.0020552207132762635,
+        "rmse": 0.04533454216462612,
+        "r2": 0.6907137712201121,
+        "mape": 5.203782949968903
       },
       "model_path": "gru_BTC-USD"
     },
@@ -44,19 +44,1862 @@
       "model_path": "hmm_BTC-USD",
       "state_stats": {
         "0": {
-          "mean": 0.6155164859624859,
-          "std": 0.06283199025546983,
-          "stationary_prob": 0.23338821922641542
+          "mean": 0.6155313839792234,
+          "std": 0.06282564993020123,
+          "stationary_prob": 0.23273636098361272
         },
         "1": {
-          "mean": 0.6149918299418102,
-          "std": 0.06363000159941241,
-          "stationary_prob": 0.24040214472600185
+          "mean": 0.6150008604777387,
+          "std": 0.06362506845336026,
+          "stationary_prob": 0.2397691752002091
         },
         "2": {
-          "mean": 0.4233712137817131,
-          "std": 0.05977747167063077,
-          "stationary_prob": 0.5262096360475826
+          "mean": 0.4236668895159846,
+          "std": 0.05978304442409735,
+          "stationary_prob": 0.5274944638161781
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ETH-USD": {
+    "ticker": "ETH-USD",
+    "timestamp": "2025-05-05T01:17:24.331108",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.07955363058058658,
+        "mse": 0.01088121715984927,
+        "rmse": 0.10431307281376227,
+        "r2": -0.07160552884435423,
+        "mape": 8.706996028712995
+      },
+      "model_path": "mlp_ETH-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.07546783406092822,
+        "mse": 0.007446029631674845,
+        "rmse": 0.0862903797168308,
+        "r2": 0.2666990830139645,
+        "mape": 8.058428061831934
+      },
+      "model_path": "lstm_ETH-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.07259143368843897,
+        "mse": 0.007420749829903229,
+        "rmse": 0.08614377417958438,
+        "r2": 0.269188691938094,
+        "mape": 7.833818058490088
+      },
+      "model_path": "gru_ETH-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ETH-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.8356301633548803,
+          "std": 0.11223132608025564,
+          "stationary_prob": 0.23187085815346659
+        },
+        "1": {
+          "mean": 0.8346504874708459,
+          "std": 0.11335155778903369,
+          "stationary_prob": 0.23988399952470338
+        },
+        "2": {
+          "mean": 0.5572600375618917,
+          "std": 0.09632109293277445,
+          "stationary_prob": 0.52824514232183
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "XRP-USD": {
+    "ticker": "XRP-USD",
+    "timestamp": "2025-05-05T01:17:30.702862",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.07108468594995776,
+        "mse": 0.017485172477453646,
+        "rmse": 0.132231510909668,
+        "r2": 0.8476956465875295,
+        "mape": 6.542428821679026
+      },
+      "model_path": "mlp_XRP-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.07526345461659452,
+        "mse": 0.018995271398471573,
+        "rmse": 0.13782333401304575,
+        "r2": 0.834541950788928,
+        "mape": 6.527322925948685
+      },
+      "model_path": "lstm_XRP-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.0748218282483932,
+        "mse": 0.018861455800192373,
+        "rmse": 0.13733701540441445,
+        "r2": 0.8357075497098821,
+        "mape": 6.413950407638919
+      },
+      "model_path": "gru_XRP-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_XRP-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.476507367039467,
+          "std": 0.12430286256600544,
+          "stationary_prob": 0.10491699915857151
+        },
+        "1": {
+          "mean": 1.4820670560187792,
+          "std": 0.12103051346629894,
+          "stationary_prob": 0.1049455704054883
+        },
+        "2": {
+          "mean": 0.7122571643989106,
+          "std": 0.23925033604939996,
+          "stationary_prob": 0.7901374304359401
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "LTC-USD": {
+    "ticker": "LTC-USD",
+    "timestamp": "2025-05-05T01:17:38.067123",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.02764242109076532,
+        "mse": 0.0018940664425533475,
+        "rmse": 0.043520873641889904,
+        "r2": 0.8762525375327301,
+        "mape": 3.3904127200149756
+      },
+      "model_path": "mlp_LTC-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03240589310130701,
+        "mse": 0.0026877678671216754,
+        "rmse": 0.05184368685888066,
+        "r2": 0.8243966284472064,
+        "mape": 3.9630341153297888
+      },
+      "model_path": "lstm_LTC-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03191525801198992,
+        "mse": 0.0025110415594970727,
+        "rmse": 0.05011029394742235,
+        "r2": 0.8359429140623367,
+        "mape": 3.8988232958146622
+      },
+      "model_path": "gru_LTC-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_LTC-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.9976562573870882,
+          "std": 0.15559033369521566,
+          "stationary_prob": 0.32439956962221844
+        },
+        "1": {
+          "mean": 0.9971045084725734,
+          "std": 0.15586083582053245,
+          "stationary_prob": 0.33203928216853823
+        },
+        "2": {
+          "mean": 0.5425019625632851,
+          "std": 0.11055693281190314,
+          "stationary_prob": 0.34356114820924333
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "BNB-USD": {
+    "ticker": "BNB-USD",
+    "timestamp": "2025-05-05T01:17:43.217686",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.016090370520824113,
+        "mse": 0.0004933778346524361,
+        "rmse": 0.022212110090048538,
+        "r2": 0.9560289343701738,
+        "mape": 2.9341140215823693
+      },
+      "model_path": "mlp_BNB-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.019361084030213395,
+        "mse": 0.000681068515228523,
+        "rmse": 0.02609728942301332,
+        "r2": 0.9393014718575302,
+        "mape": 3.6770301212535585
+      },
+      "model_path": "lstm_BNB-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.042941156027905956,
+        "mse": 0.002524455457653456,
+        "rmse": 0.05024395941457496,
+        "r2": 0.7750142207214274,
+        "mape": 8.31631799281447
+      },
+      "model_path": "gru_BNB-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_BNB-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.42136974838364566,
+          "std": 0.04598401840690517,
+          "stationary_prob": 0.2243775750304206
+        },
+        "1": {
+          "mean": 0.4221174724324249,
+          "std": 0.04679743781777873,
+          "stationary_prob": 0.23329721670139067
+        },
+        "2": {
+          "mean": 0.6170439694434037,
+          "std": 0.05409085419157576,
+          "stationary_prob": 0.5423252082681888
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ADA-USD": {
+    "ticker": "ADA-USD",
+    "timestamp": "2025-05-05T01:17:48.239660",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.3923717822868702,
+        "mse": 0.35363001094348273,
+        "rmse": 0.5946679837888389,
+        "r2": 0.35591120250191766,
+        "mape": 22.875441892401906
+      },
+      "model_path": "mlp_ADA-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.43278552327313713,
+        "mse": 0.37196744171235346,
+        "rmse": 0.6098913359872834,
+        "r2": 0.32251207525699066,
+        "mape": 20.442505925632968
+      },
+      "model_path": "lstm_ADA-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.22657997258891963,
+        "mse": 0.1401581323465206,
+        "rmse": 0.37437699227719723,
+        "r2": 0.7447210923026688,
+        "mape": 13.655654795178801
+      },
+      "model_path": "gru_ADA-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ADA-USD",
+      "state_stats": {
+        "0": {
+          "mean": 2.123928473070204,
+          "std": 0.050431658376506934,
+          "stationary_prob": 0.002985074626870889
+        },
+        "1": {
+          "mean": 2.3729133162305627,
+          "std": 0.02870593020992049,
+          "stationary_prob": 0.08656716417624462
+        },
+        "2": {
+          "mean": 0.8059339655374969,
+          "std": 0.2491879113814031,
+          "stationary_prob": 0.9104477611968844
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "DOGE-USD": {
+    "ticker": "DOGE-USD",
+    "timestamp": "2025-05-05T01:17:53.759355",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04971646392424754,
+        "mse": 0.003916967540898463,
+        "rmse": 0.06258568159649987,
+        "r2": 0.7968689176577206,
+        "mape": 4.539601457542977
+      },
+      "model_path": "mlp_DOGE-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.0372272373709213,
+        "mse": 0.003978456241169883,
+        "rmse": 0.06307500488442219,
+        "r2": 0.7936801584690016,
+        "mape": 3.488234608004168
+      },
+      "model_path": "lstm_DOGE-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.041020481954753,
+        "mse": 0.00468543746392399,
+        "rmse": 0.06845025539706912,
+        "r2": 0.7570166274404119,
+        "mape": 3.8980661015223856
+      },
+      "model_path": "gru_DOGE-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_DOGE-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.3335937758383678,
+          "std": 0.13744894576478872,
+          "stationary_prob": 0.08884046102281141
+        },
+        "1": {
+          "mean": 1.3106985339245347,
+          "std": 0.14622976761934484,
+          "stationary_prob": 0.09487187144170561
+        },
+        "2": {
+          "mean": 0.8342278429264824,
+          "std": 0.1230423793787978,
+          "stationary_prob": 0.8162876675354831
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "SOL-USD": {
+    "ticker": "SOL-USD",
+    "timestamp": "2025-05-05T01:17:59.312113",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.2722310536517773,
+        "mse": 0.14950866632703264,
+        "rmse": 0.38666350529502086,
+        "r2": -1.4944727623637086,
+        "mape": 21.698595194137894
+      },
+      "model_path": "mlp_SOL-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.20087393641224272,
+        "mse": 0.07881496398519096,
+        "rmse": 0.2807400291821438,
+        "r2": -0.3149858517077011,
+        "mape": 14.609843316987211
+      },
+      "model_path": "lstm_SOL-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.10806244222287437,
+        "mse": 0.02100317950304865,
+        "rmse": 0.14492473737443395,
+        "r2": 0.6495730951221947,
+        "mape": 8.494508840727368
+      },
+      "model_path": "gru_SOL-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_SOL-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.4403273474772056,
+          "std": 0.04642932949403658,
+          "stationary_prob": 0.04179104396583757
+        },
+        "1": {
+          "mean": 1.4422837636418544,
+          "std": 0.04722257010641416,
+          "stationary_prob": 0.04477611925629667
+        },
+        "2": {
+          "mean": 0.8047256579229443,
+          "std": 0.14434035765849063,
+          "stationary_prob": 0.9134328367778658
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "AVAX-USD": {
+    "ticker": "AVAX-USD",
+    "timestamp": "2025-05-05T01:18:07.041911",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03143565153509887,
+        "mse": 0.001986572178690222,
+        "rmse": 0.04457097910849864,
+        "r2": 0.8854829855520239,
+        "mape": 2.856541569549147
+      },
+      "model_path": "mlp_AVAX-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.036948315319144664,
+        "mse": 0.002534415525824825,
+        "rmse": 0.0503429789129013,
+        "r2": 0.8539022631539056,
+        "mape": 3.2695553117811484
+      },
+      "model_path": "lstm_AVAX-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.042619149994918955,
+        "mse": 0.003840361416475455,
+        "rmse": 0.06197064963735215,
+        "r2": 0.778620314663861,
+        "mape": 3.7419212218357214
+      },
+      "model_path": "gru_AVAX-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_AVAX-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.1506259710211864,
+          "std": 0.10927631099317539,
+          "stationary_prob": 0.16998493930817948
+        },
+        "1": {
+          "mean": 1.1485230773598722,
+          "std": 0.11098819040075496,
+          "stationary_prob": 0.1769111201164431
+        },
+        "2": {
+          "mean": 0.8263347468244975,
+          "std": 0.11152051145386838,
+          "stationary_prob": 0.6531039405753774
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "DOT-USD": {
+    "ticker": "DOT-USD",
+    "timestamp": "2025-05-05T01:18:14.397128",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03535765397911615,
+        "mse": 0.0023859801244387187,
+        "rmse": 0.048846495518498755,
+        "r2": 0.8647690964655574,
+        "mape": 4.311052646333461
+      },
+      "model_path": "mlp_DOT-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.02657011616745382,
+        "mse": 0.0020543100736477487,
+        "rmse": 0.045324497500223306,
+        "r2": 0.8835672583548264,
+        "mape": 3.461630204199737
+      },
+      "model_path": "lstm_DOT-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.050742550698019716,
+        "mse": 0.004584679315599451,
+        "rmse": 0.06771026004675695,
+        "r2": 0.7401527699607175,
+        "mape": 6.8706912677125285
+      },
+      "model_path": "gru_DOT-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_DOT-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.284174769171204,
+          "std": 0.15536195337800665,
+          "stationary_prob": 0.074248596985132
+        },
+        "1": {
+          "mean": 1.2815387296977305,
+          "std": 0.15532210640851346,
+          "stationary_prob": 0.07951227119541981
+        },
+        "2": {
+          "mean": 0.7277751490156026,
+          "std": 0.160285632926432,
+          "stationary_prob": 0.8462391318194481
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "TRX-USD": {
+    "ticker": "TRX-USD",
+    "timestamp": "2025-05-05T01:18:26.730748",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.050475615822618454,
+        "mse": 0.0033933946897777996,
+        "rmse": 0.05825285134461488,
+        "r2": 0.5055497108195884,
+        "mape": 10.2430961275327
+      },
+      "model_path": "mlp_TRX-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.025279873388179316,
+        "mse": 0.0010643137898196295,
+        "rmse": 0.03262382242809125,
+        "r2": 0.8449192300735655,
+        "mape": 5.920198121314605
+      },
+      "model_path": "lstm_TRX-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.022833478961070405,
+        "mse": 0.0009226718650101369,
+        "rmse": 0.030375514234497115,
+        "r2": 0.8655578227174143,
+        "mape": 5.121299842149741
+      },
+      "model_path": "gru_TRX-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_TRX-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.7752075915084276,
+          "std": 0.5974708435199124,
+          "stationary_prob": 0.0061709719585576065
+        },
+        "1": {
+          "mean": 2.6387215346017445,
+          "std": 0.0394057427587666,
+          "stationary_prob": 0.08649404359705958
+        },
+        "2": {
+          "mean": 0.4295077952126129,
+          "std": 0.16995702332561957,
+          "stationary_prob": 0.9073349844443829
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "MATIC-USD": {
+    "ticker": "MATIC-USD",
+    "timestamp": "2025-05-05T01:18:34.189473",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03150996093600035,
+        "mse": 0.0017533469445019086,
+        "rmse": 0.041872985856061286,
+        "r2": 0.639469777991551,
+        "mape": 3.4375976238841566
+      },
+      "model_path": "mlp_MATIC-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.026272624247519236,
+        "mse": 0.001428251315064341,
+        "rmse": 0.03779221236001328,
+        "r2": 0.7063172435331749,
+        "mape": 2.911434000642105
+      },
+      "model_path": "lstm_MATIC-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03503277439549701,
+        "mse": 0.0022441958439462103,
+        "rmse": 0.047372944218680456,
+        "r2": 0.5385394611229011,
+        "mape": 3.8604266104857605
+      },
+      "model_path": "gru_MATIC-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_MATIC-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.9863563428198289,
+          "std": 0.15825133601881597,
+          "stationary_prob": 0.3616713200283509
+        },
+        "1": {
+          "mean": 0.9869441856600712,
+          "std": 0.15875488926614234,
+          "stationary_prob": 0.3650576761321457
+        },
+        "2": {
+          "mean": 0.5966359505962873,
+          "std": 0.12157691278676946,
+          "stationary_prob": 0.27327100383950326
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "LINK-USD": {
+    "ticker": "LINK-USD",
+    "timestamp": "2025-05-05T01:18:41.233409",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.042609852331549014,
+        "mse": 0.0030462698637659783,
+        "rmse": 0.055193023687473204,
+        "r2": 0.8734833112754793,
+        "mape": 3.8577202501692907
+      },
+      "model_path": "mlp_LINK-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.05124030780785486,
+        "mse": 0.005728929427471705,
+        "rmse": 0.0756896916856695,
+        "r2": 0.7620679672141267,
+        "mape": 4.738383988138532
+      },
+      "model_path": "lstm_LINK-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04995898463806517,
+        "mse": 0.004854194513685011,
+        "rmse": 0.06967204973075652,
+        "r2": 0.7983971730144318,
+        "mape": 4.553226354215632
+      },
+      "model_path": "gru_LINK-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_LINK-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.3859716981047168,
+          "std": 0.14881924558615198,
+          "stationary_prob": 0.10449793085034839
+        },
+        "1": {
+          "mean": 1.3838348330721377,
+          "std": 0.1596674787243779,
+          "stationary_prob": 0.10451036922703104
+        },
+        "2": {
+          "mean": 0.8265114069205973,
+          "std": 0.1440689896374857,
+          "stationary_prob": 0.7909916999226205
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "BCH-USD": {
+    "ticker": "BCH-USD",
+    "timestamp": "2025-05-05T01:18:46.582706",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.0868622974866111,
+        "mse": 0.016887250009558853,
+        "rmse": 0.12995095232263154,
+        "r2": -0.08537307625416601,
+        "mape": 9.621288133954192
+      },
+      "model_path": "mlp_BCH-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.044402309101652375,
+        "mse": 0.00487384885127314,
+        "rmse": 0.06981295618488835,
+        "r2": 0.6867492150640369,
+        "mape": 5.099137541576017
+      },
+      "model_path": "lstm_BCH-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.09063735925553129,
+        "mse": 0.015611974587548138,
+        "rmse": 0.12494788748733665,
+        "r2": -0.003408895758489461,
+        "mape": 9.816774517134293
+      },
+      "model_path": "gru_BCH-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_BCH-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.5771568079383688,
+          "std": 0.07239423667121322,
+          "stationary_prob": 0.10784050837776066
+        },
+        "1": {
+          "mean": 0.5826042305429555,
+          "std": 0.07600951558242577,
+          "stationary_prob": 0.11306098830749146
+        },
+        "2": {
+          "mean": 0.8651965105805407,
+          "std": 0.09287404226608612,
+          "stationary_prob": 0.7790985033147478
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "XLM-USD": {
+    "ticker": "XLM-USD",
+    "timestamp": "2025-05-05T01:18:53.262833",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.026412486169059144,
+        "mse": 0.002284879284431608,
+        "rmse": 0.047800410923250526,
+        "r2": 0.9194959861526348,
+        "mape": 3.058764774687742
+      },
+      "model_path": "mlp_XLM-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.05951070137505064,
+        "mse": 0.005994842317229202,
+        "rmse": 0.07742636706722848,
+        "r2": 0.7887814589561368,
+        "mape": 6.712717956437129
+      },
+      "model_path": "lstm_XLM-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.047535808172835974,
+        "mse": 0.006028498511419395,
+        "rmse": 0.07764340610392742,
+        "r2": 0.7875956375687234,
+        "mape": 5.555706319546069
+      },
+      "model_path": "gru_XLM-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_XLM-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.7077399267462026,
+          "std": 0.31495269872167897,
+          "stationary_prob": 0.4423730766432843
+        },
+        "1": {
+          "mean": 0.7086280794140838,
+          "std": 0.3167784223483336,
+          "stationary_prob": 0.4477885714313305
+        },
+        "2": {
+          "mean": 2.2417609814402084,
+          "std": 0.2926861735558302,
+          "stationary_prob": 0.10983835192538519
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ATOM-USD": {
+    "ticker": "ATOM-USD",
+    "timestamp": "2025-05-05T01:18:58.168643",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03157090895446263,
+        "mse": 0.0020288489360306286,
+        "rmse": 0.04504274565377458,
+        "r2": 0.8040817260806279,
+        "mape": 3.4435652136120356
+      },
+      "model_path": "mlp_ATOM-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.029240274481352666,
+        "mse": 0.002012972060056752,
+        "rmse": 0.044866157179512846,
+        "r2": 0.8056148959883489,
+        "mape": 3.273733982869259
+      },
+      "model_path": "lstm_ATOM-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03304156793664253,
+        "mse": 0.002287294807120022,
+        "rmse": 0.04782567100543412,
+        "r2": 0.7791245850800333,
+        "mape": 3.671557099610392
+      },
+      "model_path": "gru_ATOM-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ATOM-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.0532760145478202,
+          "std": 0.14821994802165692,
+          "stationary_prob": 0.22831866916208032
+        },
+        "1": {
+          "mean": 1.052353161196653,
+          "std": 0.14854392652738627,
+          "stationary_prob": 0.23164299078158132
+        },
+        "2": {
+          "mean": 0.6620404987478099,
+          "std": 0.09412361617435692,
+          "stationary_prob": 0.5400383400563383
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "FIL-USD": {
+    "ticker": "FIL-USD",
+    "timestamp": "2025-05-05T01:19:06.318843",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.039227328094166077,
+        "mse": 0.0029199544501029664,
+        "rmse": 0.0540366028734502,
+        "r2": 0.7453708635362777,
+        "mape": 4.3019017461151945
+      },
+      "model_path": "mlp_FIL-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03110958025590846,
+        "mse": 0.0023853467107082388,
+        "rmse": 0.048840011370885644,
+        "r2": 0.7919903260501884,
+        "mape": 3.479285418846345
+      },
+      "model_path": "lstm_FIL-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.034231995903186915,
+        "mse": 0.002675603862323307,
+        "rmse": 0.051726239591945083,
+        "r2": 0.7666789970102583,
+        "mape": 3.8317631460028965
+      },
+      "model_path": "gru_FIL-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_FIL-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.851787136627829,
+          "std": 0.158689039003594,
+          "stationary_prob": 0.45447878593559277
+        },
+        "1": {
+          "mean": 0.852037553589241,
+          "std": 0.15869044682949227,
+          "stationary_prob": 0.45585465398951275
+        },
+        "2": {
+          "mean": 1.3264389605068392,
+          "std": 0.07933011654965781,
+          "stationary_prob": 0.08966656007489449
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ETC-USD": {
+    "ticker": "ETC-USD",
+    "timestamp": "2025-05-05T01:19:13.523931",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.029341477936639326,
+        "mse": 0.0014758033967079227,
+        "rmse": 0.038416186649743396,
+        "r2": 0.8978733270674961,
+        "mape": 3.7374057876967126
+      },
+      "model_path": "mlp_ETC-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.028107007946348257,
+        "mse": 0.001897657747278656,
+        "rmse": 0.04356211366863017,
+        "r2": 0.8686806978988714,
+        "mape": 3.61385330958595
+      },
+      "model_path": "lstm_ETC-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.030318126352552214,
+        "mse": 0.002012181258586057,
+        "rmse": 0.04485734341873198,
+        "r2": 0.8607555872720338,
+        "mape": 3.9605372096516116
+      },
+      "model_path": "gru_ETC-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ETC-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.9105442628443403,
+          "std": 0.1414029829593945,
+          "stationary_prob": 0.1469651320313361
+        },
+        "1": {
+          "mean": 0.9091462502868315,
+          "std": 0.14238451646264919,
+          "stationary_prob": 0.1521127700812611
+        },
+        "2": {
+          "mean": 0.5756159390170892,
+          "std": 0.09148379754157072,
+          "stationary_prob": 0.7009220978874028
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ICP-USD": {
+    "ticker": "ICP-USD",
+    "timestamp": "2025-05-05T01:19:21.731897",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.02760603075170558,
+        "mse": 0.001681609891215759,
+        "rmse": 0.04100743702324932,
+        "r2": 0.8529175181440157,
+        "mape": 3.241190797128614
+      },
+      "model_path": "mlp_ICP-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03524648763979999,
+        "mse": 0.0019995771536142817,
+        "rmse": 0.04471663173377755,
+        "r2": 0.8251064221539011,
+        "mape": 4.2253171070686335
+      },
+      "model_path": "lstm_ICP-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03280293510936986,
+        "mse": 0.001988803020694172,
+        "rmse": 0.04459599781027634,
+        "r2": 0.8260487847184971,
+        "mape": 3.902839627975822
+      },
+      "model_path": "gru_ICP-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ICP-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.076421845424074,
+          "std": 0.10208026909061399,
+          "stationary_prob": 0.20855232634985416
+        },
+        "1": {
+          "mean": 1.0757158478029771,
+          "std": 0.1031021780446664,
+          "stationary_prob": 0.21177052808286695
+        },
+        "2": {
+          "mean": 0.796817067580434,
+          "std": 0.0919017490389806,
+          "stationary_prob": 0.5796771455672788
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "APT-USD": {
+    "ticker": "APT-USD",
+    "timestamp": "2025-05-05T01:19:26.849509",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.09067585168597152,
+        "mse": 0.008346695936235474,
+        "rmse": 0.09136025359112941,
+        "r2": -19.48145478329834,
+        "mape": 86.32153070469872
+      },
+      "model_path": "mlp_APT-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.1248251274549084,
+        "mse": 0.01569771655437457,
+        "rmse": 0.12529052859005174,
+        "r2": -37.51968183166679,
+        "mape": 115.08166789871272
+      },
+      "model_path": "lstm_APT-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.0828648612259528,
+        "mse": 0.006904593671839772,
+        "rmse": 0.08309388468377063,
+        "r2": -15.942766834587196,
+        "mape": 78.0569505502778
+      },
+      "model_path": "gru_APT-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_APT-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.5781114244553023,
+          "std": 0.6352596179478285,
+          "stationary_prob": 0.171970749219193
+        },
+        "1": {
+          "mean": 1.573004882719852,
+          "std": 0.6406046418800455,
+          "stationary_prob": 0.17275912070352234
+        },
+        "2": {
+          "mean": 0.31188040456948923,
+          "std": 0.17953115173240633,
+          "stationary_prob": 0.6552701300772846
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "ARB-USD": {
+    "ticker": "ARB-USD",
+    "timestamp": "2025-05-05T01:19:34.297973",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04604338533343016,
+        "mse": 0.011240782709619736,
+        "rmse": 0.10602255755083319,
+        "r2": 0.8596172750714394,
+        "mape": Infinity
+      },
+      "model_path": "mlp_ARB-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.11692689919673335,
+        "mse": 0.022585137879664773,
+        "rmse": 0.15028352497750636,
+        "r2": 0.7179410651073913,
+        "mape": Infinity
+      },
+      "model_path": "lstm_ARB-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.0860057879255561,
+        "mse": 0.02414931917010461,
+        "rmse": 0.15540051212947983,
+        "r2": 0.6984064795267717,
+        "mape": Infinity
+      },
+      "model_path": "gru_ARB-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_ARB-USD",
+      "state_stats": {
+        "0": {
+          "mean": 3.6022145109537047,
+          "std": 1.0430526285509538,
+          "stationary_prob": 0.0904305041948679
+        },
+        "1": {
+          "mean": 3.5618682822865564,
+          "std": 1.0483793931681642,
+          "stationary_prob": 0.09769714199055071
+        },
+        "2": {
+          "mean": 0.39976230731871754,
+          "std": 0.16491549448109846,
+          "stationary_prob": 0.8118723538145813
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "OP-USD": {
+    "ticker": "OP-USD",
+    "timestamp": "2025-05-05T01:19:38.857118",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03337448302158119,
+        "mse": 0.0021802422731558584,
+        "rmse": 0.04669306450808148,
+        "r2": 0.9011602044407323,
+        "mape": 3.059120868245397
+      },
+      "model_path": "mlp_OP-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.044087034795976,
+        "mse": 0.00381582569919031,
+        "rmse": 0.06177237003054286,
+        "r2": 0.8270121460163028,
+        "mape": 3.9718129571490173
+      },
+      "model_path": "lstm_OP-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.1091654401334963,
+        "mse": 0.01584051795493212,
+        "rmse": 0.12585911947464165,
+        "r2": 0.28188092878681914,
+        "mape": 9.953715188700354
+      },
+      "model_path": "gru_OP-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_OP-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.234854187109057,
+          "std": 0.12273876372600327,
+          "stationary_prob": 0.17222953789225526
+        },
+        "1": {
+          "mean": 1.2321125973654607,
+          "std": 0.12364742056262411,
+          "stationary_prob": 0.1808687138077047
+        },
+        "2": {
+          "mean": 0.9082988915424884,
+          "std": 0.105856061888836,
+          "stationary_prob": 0.6469017483000401
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "SUI-USD": {
+    "ticker": "SUI-USD",
+    "timestamp": "2025-05-05T01:19:44.545160",
+    "mlp": {
+      "status": "failed",
+      "reason": "insufficient_data"
+    },
+    "rnn": {
+      "status": "failed",
+      "reason": "insufficient_data"
+    },
+    "lstm": {
+      "status": "failed",
+      "reason": "insufficient_data"
+    },
+    "gru": {
+      "status": "failed",
+      "reason": "insufficient_data"
+    },
+    "hmm": {
+      "status": "failed",
+      "error": "n_samples=2 should be >= n_clusters=3."
+    },
+    "anomaly": {
+      "status": "failed",
+      "reason": "insufficient_data"
+    }
+  },
+  "HBAR-USD": {
+    "ticker": "HBAR-USD",
+    "timestamp": "2025-05-05T01:19:44.985660",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.041229365854682606,
+        "mse": 0.0034772133315341906,
+        "rmse": 0.05896790085745117,
+        "r2": 0.7904472956510591,
+        "mape": 4.048790039360807
+      },
+      "model_path": "mlp_HBAR-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.05790933624674824,
+        "mse": 0.006839014813959582,
+        "rmse": 0.08269833622243909,
+        "r2": 0.5878498347079033,
+        "mape": 5.713918363939974
+      },
+      "model_path": "lstm_HBAR-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.050442692551378246,
+        "mse": 0.005953564520701883,
+        "rmse": 0.07715934499917611,
+        "r2": 0.6412111001315715,
+        "mape": 4.980281305878723
+      },
+      "model_path": "gru_HBAR-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_HBAR-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.8392312011157586,
+          "std": 0.21238730953175003,
+          "stationary_prob": 0.4276529378675092
+        },
+        "1": {
+          "mean": 0.8409392216079777,
+          "std": 0.2138591680865497,
+          "stationary_prob": 0.42964833569407856
+        },
+        "2": {
+          "mean": 2.2680497117375418,
+          "std": 0.3550167190563579,
+          "stationary_prob": 0.14269872643841228
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "QNT-USD": {
+    "ticker": "QNT-USD",
+    "timestamp": "2025-05-05T01:19:54.787485",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03978843401406035,
+        "mse": 0.002692239032189801,
+        "rmse": 0.05188679053660769,
+        "r2": 0.9201755464085405,
+        "mape": 4.361750626892489
+      },
+      "model_path": "mlp_QNT-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03004244139270272,
+        "mse": 0.0023294726669557757,
+        "rmse": 0.04826461091685891,
+        "r2": 0.9309315106969761,
+        "mape": 3.4411015357351173
+      },
+      "model_path": "lstm_QNT-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.058290657181538544,
+        "mse": 0.005261541665885616,
+        "rmse": 0.07253648506707239,
+        "r2": 0.8439961372276816,
+        "mape": 7.20443828039643
+      },
+      "model_path": "gru_QNT-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_QNT-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.0911412848032134,
+          "std": 0.21500137327433583,
+          "stationary_prob": 0.2503003667129014
+        },
+        "1": {
+          "mean": 1.0903444387941488,
+          "std": 0.21529027982930343,
+          "stationary_prob": 0.25312732381152164
+        },
+        "2": {
+          "mean": 0.5963904502388179,
+          "std": 0.08771886037259488,
+          "stationary_prob": 0.49657230947557685
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "VET-USD": {
+    "ticker": "VET-USD",
+    "timestamp": "2025-05-05T01:20:01.264594",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.036537459694996666,
+        "mse": 0.002499516361479798,
+        "rmse": 0.04999516338086914,
+        "r2": 0.858996782804941,
+        "mape": 3.8113462216514358
+      },
+      "model_path": "mlp_VET-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.03361612031687547,
+        "mse": 0.002647416490282245,
+        "rmse": 0.05145305132139633,
+        "r2": 0.8506534111406874,
+        "mape": 3.491506211834757
+      },
+      "model_path": "lstm_VET-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.044049529232185525,
+        "mse": 0.0037401257882359058,
+        "rmse": 0.06115656782583458,
+        "r2": 0.7890112755480232,
+        "mape": 4.690785020321992
+      },
+      "model_path": "gru_VET-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_VET-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.8539642740082755,
+          "std": 0.23769540718615065,
+          "stationary_prob": 0.4546433583997314
+        },
+        "1": {
+          "mean": 0.8555911810478474,
+          "std": 0.24055853293831006,
+          "stationary_prob": 0.4560680291236827
+        },
+        "2": {
+          "mean": 1.8889683575589522,
+          "std": 0.08243191004460622,
+          "stationary_prob": 0.08928861247658584
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "AAVE-USD": {
+    "ticker": "AAVE-USD",
+    "timestamp": "2025-05-05T01:20:06.735325",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04424476870962091,
+        "mse": 0.003813348610879385,
+        "rmse": 0.061752316643826285,
+        "r2": 0.8377881406420024,
+        "mape": 3.921531533493542
+      },
+      "model_path": "mlp_AAVE-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04456454287892464,
+        "mse": 0.004772520182075078,
+        "rmse": 0.06908342914241503,
+        "r2": 0.7969869918660698,
+        "mape": 4.04453524533267
+      },
+      "model_path": "lstm_AAVE-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.09475431640236875,
+        "mse": 0.014915654160501616,
+        "rmse": 0.1221296612641729,
+        "r2": 0.365519326501369,
+        "mape": 7.97808286902615
+      },
+      "model_path": "gru_AAVE-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_AAVE-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.7379907447604657,
+          "std": 0.07666668175555916,
+          "stationary_prob": 0.10082546417125866
+        },
+        "1": {
+          "mean": 0.7380312577598631,
+          "std": 0.07482689191725389,
+          "stationary_prob": 0.10082927899752991
+        },
+        "2": {
+          "mean": 1.1843005926048331,
+          "std": 0.14474962458717494,
+          "stationary_prob": 0.7983452568312115
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "GRT-USD": {
+    "ticker": "GRT-USD",
+    "timestamp": "2025-05-05T01:20:12.582155",
+    "status": "failed",
+    "reason": "no_data"
+  },
+  "EGLD-USD": {
+    "ticker": "EGLD-USD",
+    "timestamp": "2025-05-05T01:20:12.972714",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.038332366247529774,
+        "mse": 0.0027377550036709985,
+        "rmse": 0.05232356069373527,
+        "r2": 0.6902137158946682,
+        "mape": 4.066011999432735
+      },
+      "model_path": "mlp_EGLD-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.031951050497328354,
+        "mse": 0.002721383194357298,
+        "rmse": 0.05216687832674386,
+        "r2": 0.6920662417651613,
+        "mape": 3.4768065292845276
+      },
+      "model_path": "lstm_EGLD-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.038008919512436075,
+        "mse": 0.003466315575068767,
+        "rmse": 0.05887542420287745,
+        "r2": 0.6077746109140041,
+        "mape": 4.15068620649608
+      },
+      "model_path": "gru_EGLD-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_EGLD-USD",
+      "state_stats": {
+        "0": {
+          "mean": 1.004265999117681,
+          "std": 0.14529184279547028,
+          "stationary_prob": 0.49641842714148443
+        },
+        "1": {
+          "mean": 1.0047407323330915,
+          "std": 0.14499037215282293,
+          "stationary_prob": 0.5035099646140798
+        },
+        "2": {
+          "mean": 0.6673987884068646,
+          "std": 0.06875984793874743,
+          "stationary_prob": 7.160824443572414e-05
+        }
+      },
+      "converged": true
+    },
+    "anomaly": {
+      "status": "failed",
+      "error": "at least one array or dtype is required"
+    }
+  },
+  "NEAR-USD": {
+    "ticker": "NEAR-USD",
+    "timestamp": "2025-05-05T01:20:18.547043",
+    "mlp": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.06709019205571692,
+        "mse": 0.009262060034328636,
+        "rmse": 0.09623959701873568,
+        "r2": -0.010026719394307992,
+        "mape": 6.028998536225898
+      },
+      "model_path": "mlp_NEAR-USD"
+    },
+    "rnn": {
+      "status": "failed",
+      "error": "Unknown RNN type: RNN"
+    },
+    "lstm": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04665684609897174,
+        "mse": 0.003796007105413506,
+        "rmse": 0.06161174486584117,
+        "r2": 0.586045805223913,
+        "mape": 4.087455786920484
+      },
+      "model_path": "lstm_NEAR-USD"
+    },
+    "gru": {
+      "status": "success",
+      "metrics": {
+        "mae": 0.04057883468423955,
+        "mse": 0.0031582608111515604,
+        "rmse": 0.05619840577055154,
+        "r2": 0.6555919747598311,
+        "mape": 3.712928957410543
+      },
+      "model_path": "gru_NEAR-USD"
+    },
+    "hmm": {
+      "status": "success",
+      "model_path": "hmm_NEAR-USD",
+      "state_stats": {
+        "0": {
+          "mean": 0.8405110428101142,
+          "std": 0.06363597048298637,
+          "stationary_prob": 0.11191228203893851
+        },
+        "1": {
+          "mean": 0.8473314902347843,
+          "std": 0.06042589140890513,
+          "stationary_prob": 0.11817040853631929
+        },
+        "2": {
+          "mean": 1.0376202621090613,
+          "std": 0.07558172604744261,
+          "stationary_prob": 0.7699173094247421
         }
       },
       "converged": true

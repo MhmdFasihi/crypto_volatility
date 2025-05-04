@@ -88,7 +88,7 @@ def predict_states(model: GaussianHMM,
     state_series.loc[features.index] = states
     
     # Forward-fill NaN values (use the last known state)
-    state_series = state_series.fillna(method='ffill').fillna(0).astype(int)
+    state_series = state_series.ffill().fillna(0).astype(int)
     
     # Ensure length matches
     if len(state_series) != len(data):
