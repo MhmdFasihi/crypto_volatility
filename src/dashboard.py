@@ -86,12 +86,12 @@ def main():
         st.session_state.selected_ticker = TICKERS[0]
 
     tab_labels = [
-        "Overview", 
-        "Forecasting", 
-        "Regime Analysis",
-        "Anomaly Detection",
-        "Clustering",
-        "Data Exploration"
+        "📈 Overview", 
+        "🔮 Forecasting", 
+        "📊 Regime Analysis",
+        "⚠️ Anomaly Detection",
+        "🧮 Clustering",
+        "📋 Data Exploration"
     ]
 
     # Remove the check for len(tabs) == 6 and directly unpack
@@ -323,7 +323,8 @@ def main():
                     if len(X) > 0:
                         recent_data = X.iloc[-1].values
                         if model_type != "MLP":
-                            recent_data_reshaped = recent_data.reshape(1, -1, 1)
+                            # Reshape to (1, LAGS, 1) for RNNs
+                            recent_data_reshaped = recent_data.reshape(1, LAGS, 1)
                             forecast = forecast_next_values(
                                 model, recent_data_reshaped, scaler, 
                                 is_rnn=True, 

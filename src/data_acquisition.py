@@ -244,10 +244,12 @@ def get_combined_volatility_data(ticker: str, start_date: str, end_date: str) ->
         
         # Extract currency from ticker (e.g., 'BTC' from 'BTC-USD')
         currency = ticker.split('-')[0]
+        logger.info(f"Fetching IV data for currency: {currency}")
         
         # Get implied volatility from Deribit
         deribit = DeribitAPI()
-        iv_data = deribit.get_iv_data(ticker)
+        iv_data = deribit.get_iv_data(currency)
+        logger.info(f"IV data head for {currency}: {iv_data.head()}")
         
         if not iv_data.empty:
             # Aggregate IV data to daily level
@@ -265,7 +267,8 @@ def get_combined_volatility_data(ticker: str, start_date: str, end_date: str) ->
             
             logger.info(f"Successfully combined volatility data for {ticker}")
             return combined_data
-        
+        else:
+            logger.warning(f"No IV data available for {currency}. Supported Deribit tickers: BTC, ETH, SOL, XRP, ADA, MATIC, DOGE, LTC, BCH, FIL")
         return price_data
     except Exception as e:
         logger.error(f"Error getting combined volatility data: {str(e)}")

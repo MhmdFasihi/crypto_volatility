@@ -297,24 +297,27 @@ def get_current_regime(model: GaussianHMM,
     """
     # Get the most recent valid data point
     recent_data = data[feature_cols].dropna().tail(1)
-    
+    logger.info(f"[get_current_regime] recent_data: {recent_data}")
     if recent_data.empty:
-        return "Unknown", -1, 0.0
-    
+        logger.warning("[get_current_regime] No recent data available for regime classification.")
+        return "No recent data", -1, 0.0
+    if not state_stats:
+        logger.warning("[get_current_regime] state_stats is empty. HMM may not have trained properly.")
+        return "No regime stats", -1, 0.0
     # Scale data
     recent_scaled = scaler.transform(recent_data)
-    
     # Predict state probabilities
     state_probs = model.predict_proba(recent_scaled)[-1]
-    
     # Get most likely state
     current_state = np.argmax(state_probs)
     probability = state_probs[current_state]
-    
     # Get regime name
     recent_volatility = recent_data.iloc[0, 0]
+    logger.info(f"[get_current_regime] recent_volatility: {recent_volatility}, state_stats: {state_stats}")
+    if pd.isna(recent_volatility):
+        logger.warning("[get_current_regime] Recent volatility is NaN.")
+        return "No valid volatility", current_state, probability
     regime_name, _ = classify_volatility_regime(recent_volatility, state_stats)
-    
     return regime_name, current_state, probability
 
 def train_multi_feature_hmm(data: pd.DataFrame,
