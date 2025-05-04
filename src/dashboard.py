@@ -198,32 +198,29 @@ def main():
                     st.error(f"Error calculating metrics: {str(e)}")
             
             # Price chart
-            try:
-                if data is None or data.empty or 'Close' not in data.columns:
-                    st.warning("No price data available for the selected ticker and date range.")
-                else:
-                    # Ensure index is DateTimeIndex
-                    if not isinstance(data.index, pd.DatetimeIndex):
-                        try:
-                            data.index = pd.to_datetime(data.index)
-                        except Exception as e:
-                            st.error(f"Error converting index to datetime: {str(e)}")
-                    fig_price = go.Figure()
-                    fig_price.add_trace(go.Scatter(
-                        x=data.index,
-                        y=data['Close'],
-                        name='Price',
-                        line=dict(color='#1f77b4')
-                    ))
-                    fig_price.update_layout(
-                        title=f"{ticker} Price History",
-                        xaxis_title="Date",
-                        yaxis_title="Price ($)",
-                        template="plotly_white"
-                    )
-                    st.plotly_chart(fig_price, use_container_width=True)
-            except Exception as e:
-                st.error(f"Error rendering price chart: {str(e)}")
+            if data is not None and not data.empty and 'Close' in data.columns:
+                # Ensure index is DateTimeIndex
+                if not isinstance(data.index, pd.DatetimeIndex):
+                    try:
+                        data.index = pd.to_datetime(data.index)
+                    except Exception as e:
+                        st.error(f"Error converting index to datetime: {str(e)}")
+                fig_price = go.Figure()
+                fig_price.add_trace(go.Scatter(
+                    x=data.index,
+                    y=data['Close'],
+                    name='Price',
+                    line=dict(color='#1f77b4')
+                ))
+                fig_price.update_layout(
+                    title=f"{ticker} Price History",
+                    xaxis_title="Date",
+                    yaxis_title="Price ($)",
+                    template="plotly_white"
+                )
+                st.plotly_chart(fig_price, use_container_width=True)
+            else:
+                st.warning("No valid price data available for the selected ticker and date range.")
             
             # Volatility chart
             try:

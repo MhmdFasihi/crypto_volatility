@@ -48,7 +48,9 @@ def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') 
             raise ValueError("Start date must be before end date")
         
         # Fetch data
+        logger.info(f"Fetching data for {ticker} from {start_date} to {end_date} with interval {interval}")
         data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
+        logger.info(f"Data fetched: {data.head()}")
         
         if data.empty:
             logger.warning(f"No data found for ticker {ticker}")
