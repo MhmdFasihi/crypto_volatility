@@ -1,9 +1,11 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# Distribution / packaging
 build/
 develop-eggs/
 dist/
@@ -20,29 +22,36 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Virtual environments
 venv/
 env/
 ENV/
+.venv/
+.env
 
-# IDE
+# IDE files
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
 # Project specific
-.env
-logs/
 data/
 models/
-.pytest_cache/ 
+logs/
+*.log
+training_results.json
+.cache/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Streamlit
+.streamlit/secrets.toml

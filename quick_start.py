@@ -1,4 +1,3 @@
-# quick_start.py
 """
 Quick start script for the crypto volatility analysis system.
 """
@@ -36,6 +35,14 @@ class QuickStart:
             path.mkdir(exist_ok=True)
             logger.info(f"Created {dir_name}/")
     
+    def check_src_init(self):
+        """Check if src/__init__.py exists and create if needed."""
+        init_path = self.root_dir / 'src' / '__init__.py'
+        if not init_path.exists():
+            logger.info("Creating src/__init__.py")
+            with open(init_path, 'w') as f:
+                f.write('"""Crypto Volatility Analysis package."""\n')
+    
     def install_dependencies(self):
         """Install dependencies."""
         logger.info("Installing dependencies...")
@@ -45,6 +52,23 @@ class QuickStart:
             return True
         except subprocess.CalledProcessError as e:
             logger.error(f"Failed to install dependencies: {e}")
+            return False
+    
+    def install_package(self):
+        """Install the package in development mode."""
+        logger.info("Installing package in development mode...")
+        try:
+            # Check if setup.py exists
+            setup_path = self.root_dir / 'setup.py'
+            if not setup_path.exists():
+                logger.warning("setup.py not found, skipping package installation")
+                return False
+                
+            subprocess.run([sys.executable, '-m', 'pip', 'install', '-e', '.'], check=True)
+            logger.info("Package installed successfully")
+            return True
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to install package: {e}")
             return False
     
     def create_env_file(self):
@@ -80,7 +104,7 @@ MODEL_DIR=models/
                 logger.info("Tests passed successfully")
                 return True
             else:
-                logger.warning("Some tests failed")
+                logger.warning(f"Some tests failed: {result.stderr}")
                 return False
         except Exception as e:
             logger.error(f"Error running tests: {e}")
@@ -90,7 +114,7 @@ MODEL_DIR=models/
         """Train a sample model."""
         logger.info("Training sample model...")
         try:
-            subprocess.run([sys.executable, 'src/train_models.py', 
+            subprocess.run([sys.executable, '-m', 'src.train_models', 
                           '--ticker', 'BTC-USD', '--model', 'mlp'], check=True)
             logger.info("Sample model trained successfully")
             return True
@@ -105,7 +129,14 @@ MODEL_DIR=models/
         logger.info("Press Ctrl+C to stop the dashboard")
         
         try:
-            subprocess.run([sys.executable, '-m', 'streamlit', 'run', 'src/dashboard.py'])
+            # Check if streamlit_app.py exists in root directory
+            streamlit_path = self.root_dir / 'streamlit_app.py'
+            if streamlit_path.exists():
+                # Run streamlit_app.py from root
+                subprocess.run([sys.executable, '-m', 'streamlit', 'run', 'streamlit_app.py'])
+            else:
+                # Run dashboard directly from src
+                subprocess.run([sys.executable, '-m', 'streamlit', 'run', 'src/dashboard.py'])
         except KeyboardInterrupt:
             logger.info("Dashboard stopped")
     
@@ -123,9 +154,15 @@ Crypto Volatility Analysis - Quick Start
         # Create directories
         self.create_directories()
         
+        # Check src/__init__.py
+        self.check_src_init()
+        
         # Install dependencies
         if not self.install_dependencies():
             return False
+        
+        # Install package
+        self.install_package()
         
         # Create environment file
         self.create_env_file()
@@ -155,7 +192,7 @@ Next Steps:
    python quick_start.py --dashboard
    
 3. Or train more models:
-   python src/train_models.py --ticker ETH-USD --model all
+   python -m src.train_models --ticker ETH-USD --model all
 """)
         
         # Ask if user wants to launch dashboard

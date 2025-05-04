@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "streamlit>=1.36.0",
-        "pandas>=2.2.2",
+        "pandas>=2.2.2",  
         "numpy>=1.26.4",
         "yfinance>=0.2.40",
         "scikit-learn>=1.5.0",

@@ -1,4 +1,3 @@
-# src/dashboard.py
 """
 Streamlit dashboard for cryptocurrency volatility analysis.
 """
@@ -12,7 +11,7 @@ from plotly.subplots import make_subplots
 import os
 from datetime import datetime, timedelta
 
-# Use absolute imports consistently
+# Use absolute imports for better compatibility
 from src.data_acquisition import get_data, get_combined_volatility_data, DeribitAPI
 from src.preprocessing import (
     calculate_returns, 
@@ -132,16 +131,20 @@ def main():
     if st.sidebar.button("Refresh Data", type="primary"):
         with st.spinner("Fetching data..."):
             try:
-                if use_deribit:
-                    data = get_combined_volatility_data(ticker, str(start_date), str(end_date))
-                else:
-                    data = get_data(ticker, str(start_date), str(end_date))
+                # Convert date inputs to strings in the correct format
+                start_date_str = start_date.strftime('%Y-%m-%d')
+                end_date_str = end_date.strftime('%Y-%m-%d')
                 
-                if not data.empty:
+                if use_deribit:
+                    data = get_combined_volatility_data(ticker, start_date_str, end_date_str)
+                else:
+                    data = get_data(ticker, start_date_str, end_date_str)
+                
+                if data is not None and not data.empty:
                     # Preprocess data
                     data = calculate_returns(data)
-                    data = calculate_volatility(data, window=vol_window)
-                    data = calculate_advanced_volatility_metrics(data, window=vol_window)
+                    data = calculate_volatility(data, window=int(vol_window))
+                    data = calculate_advanced_volatility_metrics(data, window=int(vol_window))
                     
                     if use_deribit and 'ImpliedVolatility' in data.columns:
                         data = calculate_iv_rv_spread(data)
@@ -171,87 +174,99 @@ def main():
         with tab1:
             st.header("Market Overview")
             
-            # Key metrics
-            col1, col2, col3, col4 = st.columns(4)
-            
-            current_price = data['Close'].iloc[-1]
-            current_vol = data['Volatility'].iloc[-1]
-            avg_vol = data['Volatility'].mean()
-            vol_change = ((current_vol - avg_vol) / avg_vol) * 100
-            
-            with col1:
-                st.metric("Current Price", f"${current_price:.2f}")
-            with col2:
-                st.metric("Current Volatility", f"{current_vol:.2%}")
-            with col3:
-                st.metric("Average Volatility", f"{avg_vol:.2%}")
-            with col4:
-                st.metric("Vol. Change", f"{vol_change:.1f}%")
+            # Key metrics with safe conversion and error handling
+            try:
+                current_price = float(data['Close'].iloc[-1])
+                current_vol = float(data['Volatility'].iloc[-1])
+                avg_vol = float(data['Volatility'].mean())
+                vol_change = ((current_vol - avg_vol) / max(avg_vol, 0.0001)) * 100  # Avoid division by zero
+                
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.metric("Current Price", f"${current_price:.2f}")
+                with col2:
+                    st.metric("Current Volatility", f"{current_vol:.2%}")
+                with col3:
+                    st.metric("Average Volatility", f"{avg_vol:.2%}")
+                with col4:
+                    st.metric("Vol. Change", f"{vol_change:.1f}%")
+            except Exception as e:
+                st.error(f"Error calculating metrics: {str(e)}")
             
             # Price chart
-            fig_price = go.Figure()
-            fig_price.add_trace(go.Scatter(
-                x=data.index, 
-                y=data['Close'],
-                name='Price',
-                line=dict(color='#1f77b4')
-            ))
-            fig_price.update_layout(
-                title=f"{ticker} Price History",
-                xaxis_title="Date",
-                yaxis_title="Price ($)",
-                template="plotly_white"
-            )
-            st.plotly_chart(fig_price, use_container_width=True)
+            try:
+                fig_price = go.Figure()
+                fig_price.add_trace(go.Scatter(
+                    x=data.index, 
+                    y=data['Close'],
+                    name='Price',
+                    line=dict(color='#1f77b4')
+                ))
+                fig_price.update_layout(
+                    title=f"{ticker} Price History",
+                    xaxis_title="Date",
+                    yaxis_title="Price ($)",
+                    template="plotly_white"
+                )
+                st.plotly_chart(fig_price, use_container_width=True)
+            except Exception as e:
+                st.error(f"Error rendering price chart: {str(e)}")
             
             # Volatility chart
-            fig_vol = go.Figure()
-            fig_vol.add_trace(go.Scatter(
-                x=data.index, 
-                y=data['Volatility'],
-                name='Realized Volatility',
-                line=dict(color='#ff7f0e')
-            ))
-            
-            if 'ImpliedVolatility' in data.columns:
+            try:
+                fig_vol = go.Figure()
                 fig_vol.add_trace(go.Scatter(
                     x=data.index, 
-                    y=data['ImpliedVolatility'],
-                    name='Implied Volatility',
-                    line=dict(color='#2ca02c')
+                    y=data['Volatility'],
+                    name='Realized Volatility',
+                    line=dict(color='#ff7f0e')
                 ))
-            
-            fig_vol.update_layout(
-                title=f"{ticker} Volatility History",
-                xaxis_title="Date",
-                yaxis_title="Volatility",
-                template="plotly_white"
-            )
-            st.plotly_chart(fig_vol, use_container_width=True)
-            
-            # Volatility metrics comparison
-            if all(col in data.columns for col in ['Parkinson_Vol', 'GK_Vol', 'RS_Vol']):
-                st.subheader("Volatility Metrics Comparison")
                 
-                fig_vol_comp = go.Figure()
-                vol_metrics = ['Volatility', 'Parkinson_Vol', 'GK_Vol', 'RS_Vol']
-                colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
-                
-                for metric, color in zip(vol_metrics, colors):
-                    fig_vol_comp.add_trace(go.Scatter(
-                        x=data.index,
-                        y=data[metric],
-                        name=metric.replace('_', ' '),
-                        line=dict(color=color, width=2)
+                if 'ImpliedVolatility' in data.columns:
+                    fig_vol.add_trace(go.Scatter(
+                        x=data.index, 
+                        y=data['ImpliedVolatility'],
+                        name='Implied Volatility',
+                        line=dict(color='#2ca02c')
                     ))
                 
-                fig_vol_comp.update_layout(
-                    title="Comparison of Volatility Metrics",
+                fig_vol.update_layout(
+                    title=f"{ticker} Volatility History",
                     xaxis_title="Date",
                     yaxis_title="Volatility",
                     template="plotly_white"
                 )
-                st.plotly_chart(fig_vol_comp, use_container_width=True)
+                st.plotly_chart(fig_vol, use_container_width=True)
+            except Exception as e:
+                st.error(f"Error rendering volatility chart: {str(e)}")
+            
+            # Volatility metrics comparison
+            if all(col in data.columns for col in ['Parkinson_Vol', 'GK_Vol', 'RS_Vol']):
+                try:
+                    st.subheader("Volatility Metrics Comparison")
+                    
+                    fig_vol_comp = go.Figure()
+                    vol_metrics = ['Volatility', 'Parkinson_Vol', 'GK_Vol', 'RS_Vol']
+                    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+                    
+                    for metric, color in zip(vol_metrics, colors):
+                        fig_vol_comp.add_trace(go.Scatter(
+                            x=data.index,
+                            y=data[metric],
+                            name=metric.replace('_', ' '),
+                            line=dict(color=color, width=2)
+                        ))
+                    
+                    fig_vol_comp.update_layout(
+                        title="Comparison of Volatility Metrics",
+                        xaxis_title="Date",
+                        yaxis_title="Volatility",
+                        template="plotly_white"
+                    )
+                    st.plotly_chart(fig_vol_comp, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Error rendering volatility metrics comparison: {str(e)}")
         
         # Tab 2: Forecasting
         with tab2:
@@ -280,13 +295,18 @@ def main():
                         
                         # Generate forecast
                         if model_type != "MLP":
-                            recent_data = recent_data.reshape(1, -1, 1)
-                        
-                        forecast = forecast_next_values(
-                            model, recent_data, scaler, 
-                            is_rnn=(model_type != "MLP"), 
-                            n_ahead=n_forecast_days
-                        )
+                            recent_data_reshaped = recent_data.reshape(1, -1, 1)
+                            forecast = forecast_next_values(
+                                model, recent_data_reshaped, scaler, 
+                                is_rnn=True, 
+                                n_ahead=n_forecast_days
+                            )
+                        else:
+                            forecast = forecast_next_values(
+                                model, recent_data, scaler, 
+                                is_rnn=False, 
+                                n_ahead=n_forecast_days
+                            )
                         
                         # Create forecast dates
                         last_date = data.index[-1]
@@ -334,6 +354,7 @@ def main():
                         
                 except FileNotFoundError:
                     st.error(f"Model not found. Please train the {model_type} model first.")
+                    st.info("You can train models using: python src/train_models.py --ticker " + ticker + " --model " + model_type.lower())
                 except Exception as e:
                     st.error(f"Error generating forecast: {str(e)}")
         
@@ -438,8 +459,8 @@ def main():
                 if detection_method == "Z-Score":
                     anomaly_data = detect_anomalies_zscore(
                         data.copy(), 
-                        window=vol_window, 
-                        threshold=anomaly_threshold
+                        window=int(vol_window), 
+                        threshold=float(anomaly_threshold)
                     )
                     anomaly_col = 'Anomaly'
                 else:
@@ -523,12 +544,16 @@ def main():
             if st.button("Run Clustering Analysis"):
                 with st.spinner("Performing clustering analysis..."):
                     try:
+                        # Convert dates to string format for clustering
+                        start_date_str = start_date.strftime('%Y-%m-%d')
+                        end_date_str = end_date.strftime('%Y-%m-%d')
+                        
                         # Perform clustering
                         cluster_mapping = cluster_tickers(
                             TICKERS,
-                            str(start_date),
-                            str(end_date),
-                            n_clusters=n_clusters,
+                            start_date_str,
+                            end_date_str,
+                            n_clusters=int(n_clusters),
                             clustering_method=clustering_method
                         )
                         
@@ -537,8 +562,8 @@ def main():
                             cluster_stats = get_cluster_characteristics(
                                 TICKERS,
                                 cluster_mapping,
-                                str(start_date),
-                                str(end_date)
+                                start_date_str,
+                                end_date_str
                             )
                             
                             # Display current ticker's cluster
@@ -616,7 +641,7 @@ def main():
     """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
-    # If running this file directly, ensure src is in path
+    # When running this file directly, ensure proper imports
     import sys
     import os
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
