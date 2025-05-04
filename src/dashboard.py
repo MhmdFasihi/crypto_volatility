@@ -173,26 +173,29 @@ def main():
         # Tab 1: Overview
         with tab1:
             st.header("Market Overview")
-            
-            # Key metrics with safe conversion and error handling
-            try:
-                current_price = float(data['Close'].iloc[-1])
-                current_vol = float(data['Volatility'].iloc[-1])
-                avg_vol = float(data['Volatility'].mean())
-                vol_change = ((current_vol - avg_vol) / max(avg_vol, 0.0001)) * 100  # Avoid division by zero
-                
-                col1, col2, col3, col4 = st.columns(4)
-                
-                with col1:
-                    st.metric("Current Price", f"${current_price:.2f}")
-                with col2:
-                    st.metric("Current Volatility", f"{current_vol:.2%}")
-                with col3:
-                    st.metric("Average Volatility", f"{avg_vol:.2%}")
-                with col4:
-                    st.metric("Vol. Change", f"{vol_change:.1f}%")
-            except Exception as e:
-                st.error(f"Error calculating metrics: {str(e)}")
+            # Check for empty or invalid data
+            if data is None or data.empty or 'Close' not in data.columns or 'Volatility' not in data.columns:
+                st.warning("No valid data available for the selected ticker and date range.")
+            else:
+                try:
+                    # Ensure numeric types for calculations
+                    data['Close'] = pd.to_numeric(data['Close'], errors='coerce')
+                    data['Volatility'] = pd.to_numeric(data['Volatility'], errors='coerce')
+                    current_price = float(data['Close'].iloc[-1])
+                    current_vol = float(data['Volatility'].iloc[-1])
+                    avg_vol = float(data['Volatility'].mean())
+                    vol_change = ((current_vol - avg_vol) / max(avg_vol, 0.0001)) * 100  # Avoid division by zero
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Current Price", f"${current_price:.2f}")
+                    with col2:
+                        st.metric("Current Volatility", f"{current_vol:.2%}")
+                    with col3:
+                        st.metric("Average Volatility", f"{avg_vol:.2%}")
+                    with col4:
+                        st.metric("Vol. Change", f"{vol_change:.1f}%")
+                except Exception as e:
+                    st.error(f"Error calculating metrics: {str(e)}")
             
             # Price chart
             try:
@@ -360,7 +363,7 @@ def main():
         
         # Tab 3: Regime Analysis
         with tab3:
-            st.header("Volatility Regime Analysis")
+            st.header("Volatility Regime Classification")
             
             try:
                 # Train HMM
@@ -377,10 +380,14 @@ def main():
                     hmm_model, data, hmm_scaler, state_stats
                 )
                 
+                # Map regime numbers to names
+                regime_names = {0: "Low Volatility", 1: "Medium Volatility", 2: "High Volatility", 3: "Extreme Volatility"}
+                regime_label = regime_names.get(current_regime, f"Regime {current_regime}")
+                
                 # Display current regime
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Current Regime", current_regime)
+                    st.metric("Current Regime", regime_label)
                 with col2:
                     st.metric("State", f"State {current_state}")
                 with col3:
@@ -558,49 +565,18 @@ def main():
                         )
                         
                         if cluster_mapping:
-                            # Get cluster characteristics
-                            cluster_stats = get_cluster_characteristics(
-                                TICKERS,
-                                cluster_mapping,
-                                start_date_str,
-                                end_date_str
-                            )
-                            
-                            # Display current ticker's cluster
-                            if ticker in cluster_mapping:
-                                current_cluster = cluster_mapping[ticker]
-                                st.info(f"{ticker} belongs to Cluster {current_cluster}")
-                                
-                                # Similar cryptocurrencies
-                                similar_tickers = get_similar_tickers(ticker, cluster_mapping)
-                                if similar_tickers:
-                                    st.write("**Similar Cryptocurrencies:**")
-                                    st.write(", ".join(similar_tickers))
-                            
-                            # Cluster visualization
-                            cluster_df = pd.DataFrame([
-                                {'Ticker': t, 'Cluster': c} 
-                                for t, c in cluster_mapping.items()
-                            ])
-                            
-                            fig_cluster = px.bar(
-                                cluster_df.groupby('Cluster').size().reset_index(name='Count'),
-                                x='Cluster',
-                                y='Count',
-                                title='Cryptocurrencies per Cluster'
-                            )
-                            st.plotly_chart(fig_cluster, use_container_width=True)
-                            
-                            # Cluster characteristics
-                            st.subheader("Cluster Characteristics")
-                            stats_df = pd.DataFrame(cluster_stats).T
-                            st.dataframe(stats_df.style.format({
-                                'avg_volatility': '{:.2%}',
-                                'std_volatility': '{:.2%}',
-                                'median_volatility': '{:.2%}',
-                                'avg_return': '{:.4f}',
-                                'std_return': '{:.4f}'
-                            }))
+                            # Show all tickers for each cluster
+                            try:
+                                st.subheader("Tickers in Each Cluster")
+                                for cluster_id in sorted(set(cluster_mapping.values())):
+                                    tickers_in_cluster = [ticker for ticker, cluster in cluster_mapping.items() if cluster == cluster_id]
+                                    st.markdown(f"**Cluster {cluster_id}:** {', '.join(tickers_in_cluster)}")
+                                # Show cluster characteristics
+                                st.subheader("Cluster Characteristics")
+                                cluster_chars = get_cluster_characteristics(TICKERS, cluster_mapping, start_date_str, end_date_str)
+                                st.write(cluster_chars)
+                            except Exception as e:
+                                st.error(f"Error in clustering: {str(e)}")
                         else:
                             st.warning("Insufficient data for clustering analysis")
                         

@@ -37,7 +37,7 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     
     # Ensure price data is numeric
     try:
-        data[price_col] = data[price_col].astype(float)
+        data[price_col] = pd.to_numeric(data[price_col], errors='coerce')
     except Exception as e:
         logger.warning(f"Error converting {price_col} to float: {str(e)}")
         data[price_col] = data[price_col].replace('', np.nan).astype(float)
@@ -46,6 +46,7 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     data['Returns'] = np.log(data[price_col] / data[price_col].shift(1))
     
     logger.info(f"Calculated returns. NaN values: {data['Returns'].isna().sum()}")
+    data = data.ffill().bfill()
     return data
 
 def calculate_volatility(data: pd.DataFrame, window: Optional[int] = None, 
@@ -270,7 +271,7 @@ def preprocess_for_modeling(data: pd.DataFrame, target_col: str = 'Volatility',
             data[col] = pd.to_numeric(data[col], errors='coerce')
     
     # Forward fill then backward fill remaining NaNs
-    data = data.fillna(method='ffill').fillna(method='bfill')
+    data = data.ffill().bfill()
     
     logger.info(f"Preprocessed data for modeling. Shape: {data.shape}")
     return data

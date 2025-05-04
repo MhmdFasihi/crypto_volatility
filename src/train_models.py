@@ -108,7 +108,9 @@ def train_forecasting_model(ticker: str,
             else:
                 # Reshape for RNN
                 X_train_seq = X_train.values.reshape(X_train.shape[0], X_train.shape[1], 1)
-                model, scaler = train_rnn(X_train_seq, y_train.values, model_type=model_type.upper())
+                # Map 'rnn' to 'SimpleRNN' for model_type
+                rnn_type = 'SimpleRNN' if model_type.lower() == 'rnn' else model_type.upper()
+                model, scaler = train_rnn(X_train_seq, y_train.values, model_type=rnn_type)
                 is_rnn = True
             
             # Evaluate model

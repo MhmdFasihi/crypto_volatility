@@ -176,7 +176,14 @@ os.makedirs(MODELS_DIR, exist_ok=True)
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 # List of cryptocurrency tickers to analyze
-TICKERS = ['BTC-USD', 'ETH-USD', 'XRP-USD', 'LTC-USD', 'BNB-USD']
+TICKERS = [
+    'BTC-USD', 'ETH-USD', 'XRP-USD', 'LTC-USD', 'BNB-USD',
+    'ADA-USD', 'DOGE-USD', 'SOL-USD', 'AVAX-USD', 'DOT-USD',
+    'TRX-USD', 'MATIC-USD', 'LINK-USD', 'BCH-USD', 'XLM-USD',
+    'ATOM-USD', 'FIL-USD', 'ETC-USD', 'ICP-USD', 'APT-USD',
+    'ARB-USD', 'OP-USD', 'SUI-USD', 'HBAR-USD', 'QNT-USD',
+    'VET-USD', 'AAVE-USD', 'GRT-USD', 'EGLD-USD', 'NEAR-USD'
+]
 
 # Number of lagged features for forecasting models
 LAGS = 5  # int

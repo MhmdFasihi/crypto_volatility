@@ -253,6 +253,7 @@ def save_model(model: Any, scaler: StandardScaler, filename: str, is_rnn: bool =
     joblib.dump(scaler, model_dir / f"{filename}_scaler.pkl")
 
     logger.info(f"Model saved to {model_dir / filename}")
+
 def load_model(filename: str, is_rnn: bool = False) -> Tuple[Any, StandardScaler]:
     """
     Load a trained model and scaler.
@@ -265,7 +266,11 @@ def load_model(filename: str, is_rnn: bool = False) -> Tuple[Any, StandardScaler
         Tuple of (loaded model, scaler)
     """
     if is_rnn:
-        model = keras_load_model(os.path.join(MODEL_DIR, f"{filename}.h5"))
+        # Use compile=False to avoid 'mse' error
+        from tensorflow.keras.losses import MeanSquaredError
+        model = keras_load_model(os.path.join(MODEL_DIR, f"{filename}.h5"), compile=False)
+        # Recompile with standard loss and optimizer
+        model.compile(optimizer='adam', loss=MeanSquaredError())
     else:
         model = joblib.load(os.path.join(MODEL_DIR, f"{filename}.pkl"))
     
