@@ -12,37 +12,38 @@ from plotly.subplots import make_subplots
 import os
 from datetime import datetime, timedelta
 
-from .data_acquisition import get_data, get_combined_volatility_data, DeribitAPI
-from .preprocessing import (
+# Use absolute imports consistently
+from src.data_acquisition import get_data, get_combined_volatility_data, DeribitAPI
+from src.preprocessing import (
     calculate_returns, 
     calculate_volatility,
     calculate_advanced_volatility_metrics,
     calculate_volatility_ratio,
     calculate_iv_rv_spread
 )
-from .forecasting import (
+from src.forecasting import (
     load_model, 
     prepare_data, 
     forecast_next_values,
     prepare_sequences
 )
-from .anomaly_detection import (
+from src.anomaly_detection import (
     detect_anomalies_zscore,
     ensemble_anomaly_detection,
     get_anomaly_statistics
 )
-from .classification import (
+from src.classification import (
     train_hmm, 
     predict_states, 
     get_state_statistics,
     get_current_regime
 )
-from .clustering import (
+from src.clustering import (
     cluster_tickers, 
     get_similar_tickers,
     get_cluster_characteristics
 )
-from .config import (
+from src.config import (
     TICKERS, VOL_WINDOW, LAGS, N_CLUSTERS, HMM_STATES, 
     ANOMALY_THRESHOLD, DEFAULT_START_DATE, DEFAULT_END_DATE
 )
@@ -615,4 +616,8 @@ def main():
     """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
+    # If running this file directly, ensure src is in path
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     main()

@@ -12,7 +12,7 @@ from sklearn.ensemble import IsolationForest
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import precision_recall_curve, roc_auc_score
-from .config import ANOMALY_THRESHOLD, VOL_WINDOW, RANDOM_SEED
+from src.config import ANOMALY_THRESHOLD, VOL_WINDOW, RANDOM_SEED
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

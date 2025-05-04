@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple, Optional
 import logging
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
-from .config import HMM_STATES, VOL_WINDOW, RANDOM_SEED
+from src.config import HMM_STATES, VOL_WINDOW, RANDOM_SEED
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
