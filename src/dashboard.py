@@ -85,10 +85,6 @@ def main():
     if 'selected_ticker' not in st.session_state:
         st.session_state.selected_ticker = TICKERS[0]
 
-    # --- Tab persistence setup ---
-    if 'active_tab' not in st.session_state:
-        st.session_state.active_tab = 0
-
     tab_labels = [
         "📈 Overview", 
         "🔮 Forecasting", 
@@ -98,7 +94,7 @@ def main():
         "📋 Data Exploration"
     ]
 
-    tabs = st.tabs(tab_labels, key='tabs')
+    tabs = st.tabs(tab_labels)
 
     tab1, tab2, tab3, tab4, tab5, tab6 = tabs
 
@@ -317,7 +313,6 @@ def main():
             )
             model_filename = f"{model_type.lower()}_{ticker}"
             if st.button("Generate Forecast", key="generate_forecast"):
-                st.session_state.active_tab = 1  # Set active tab to Forecasting
                 try:
                     # Always train the model when button is clicked
                     with st.spinner(f"Training {model_type} model for {ticker}..."):
@@ -648,10 +643,6 @@ def main():
         <p>Crypto Volatility Analysis Dashboard | Built with Streamlit</p>
     </div>
     """, unsafe_allow_html=True)
-
-    # --- Tab switching logic ---
-    # Set the active tab after rerun
-    st.session_state.active_tab = getattr(st.session_state, 'active_tab', 0)
 
 if __name__ == "__main__":
     # When running this file directly, ensure proper imports
