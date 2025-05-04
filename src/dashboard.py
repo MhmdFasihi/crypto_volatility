@@ -123,13 +123,8 @@ with st.sidebar.expander("Advanced Options"):
     use_deribit = st.checkbox("Include Deribit IV Data", value=False)
     vol_window = st.slider("Volatility Window", 5, 60, VOL_WINDOW)
     n_forecast_days = st.slider("Forecast Horizon (days)", 1, 30, 5)
-    anomaly_threshold = st.slider(
-        "Anomaly Threshold", 
-        1.0, 
-        4.0, 
-        float(ANOMALY_THRESHOLD) if isinstance(ANOMALY_THRESHOLD, (int, float, list)) else 2.0,  # Default to 2.0 if conversion fails
-        0.1
-    )
+    anomaly_threshold = st.slider("Anomaly Threshold", 1.0, 4.0, float(ANOMALY_THRESHOLD), 0.1)
+
 # Data refresh button
 if st.sidebar.button("Refresh Data", type="primary"):
     with st.spinner("Fetching data..."):
@@ -140,11 +135,6 @@ if st.sidebar.button("Refresh Data", type="primary"):
                 data = get_data(ticker, str(start_date), str(end_date))
             
             if not data.empty:
-                # Ensure numeric data types before calculations
-                for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
-                    if col in data.columns:
-                        data[col] = pd.to_numeric(data[col], errors='coerce')
-                
                 # Preprocess data
                 data = calculate_returns(data)
                 data = calculate_volatility(data, window=vol_window)
@@ -159,8 +149,6 @@ if st.sidebar.button("Refresh Data", type="primary"):
                 st.error("No data available for the selected ticker and date range.")
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
-            import traceback
-            st.code(traceback.format_exc())
 
 # Main content
 if st.session_state.data is not None:
@@ -180,63 +168,22 @@ if st.session_state.data is not None:
     with tab1:
         st.header("Market Overview")
         
-        # Key metrics with robust formatting
+        # Key metrics
         col1, col2, col3, col4 = st.columns(4)
         
-        # Extract metrics safely
-        try:
-            current_price = data['Close'].iloc[-1]
-        except:
-            current_price = None
-            
-        try:
-            current_vol = data['Volatility'].iloc[-1]
-        except:
-            current_vol = None
-            
-        try:
-            avg_vol = data['Volatility'].mean()
-        except:
-            avg_vol = None
-            
-        # Calculate vol change safely
-        if current_vol is not None and avg_vol is not None and avg_vol != 0:
-            vol_change = ((current_vol - avg_vol) / avg_vol) * 100
-        else:
-            vol_change = None
+        current_price = data['Close'].iloc[-1]
+        current_vol = data['Volatility'].iloc[-1]
+        avg_vol = data['Volatility'].mean()
+        vol_change = ((current_vol - avg_vol) / avg_vol) * 100
         
-        # Display metrics with type checking
         with col1:
-            if isinstance(current_price, (int, float)):
-                st.metric("Current Price", f"${current_price:.2f}")
-            elif isinstance(current_price, pd.Series):
-                st.metric("Current Price", f"${float(current_price.iloc[0]):.2f}")
-            else:
-                st.metric("Current Price", "N/A")
-                
+            st.metric("Current Price", f"${current_price:.2f}")
         with col2:
-            if isinstance(current_vol, (int, float)):
-                st.metric("Current Volatility", f"{current_vol:.2%}")
-            elif isinstance(current_vol, pd.Series):
-                st.metric("Current Volatility", f"{float(current_vol.iloc[0]):.2%}")
-            else:
-                st.metric("Current Volatility", "N/A")
-                
+            st.metric("Current Volatility", f"{current_vol:.2%}")
         with col3:
-            if isinstance(avg_vol, (int, float)):
-                st.metric("Average Volatility", f"{avg_vol:.2%}")
-            elif isinstance(avg_vol, pd.Series):
-                st.metric("Average Volatility", f"{float(avg_vol.iloc[0]):.2%}")
-            else:
-                st.metric("Average Volatility", "N/A")
-                
+            st.metric("Average Volatility", f"{avg_vol:.2%}")
         with col4:
-            if isinstance(vol_change, (int, float)):
-                st.metric("Vol. Change", f"{vol_change:.1f}%")
-            elif isinstance(vol_change, pd.Series):
-                st.metric("Vol. Change", f"{float(vol_change.iloc[0]):.1f}%")
-            else:
-                st.metric("Vol. Change", "N/A")
+            st.metric("Vol. Change", f"{vol_change:.1f}%")
         
         # Price chart
         fig_price = go.Figure()
@@ -318,17 +265,8 @@ if st.session_state.data is not None:
         
         if st.button("Generate Forecast"):
             try:
-                # Check if model file exists first
-                import os
-                model_path = os.path.join('models', f"{model_filename}.pkl")
-                scaler_path = os.path.join('models', f"{model_filename}_scaler.pkl")
-                
-                if not os.path.exists(model_path) or not os.path.exists(scaler_path):
-                    st.error(f"Model files not found. Please train the {model_type} model first.")
-                    st.info("You can run the training script with: `python src/train_models.py --ticker BTC-USD --model mlp`")
-                else:
-                    # Load model
-                    model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
+                # Load model
+                model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
                 
                 # Prepare data
                 X, y = prepare_data(data, lags=LAGS)
@@ -393,7 +331,6 @@ if st.session_state.data is not None:
                     
             except FileNotFoundError:
                 st.error(f"Model not found. Please train the {model_type} model first.")
-                st.info("You can run the training script with: `python src/train_models.py --ticker BTC-USD --model mlp`")
             except Exception as e:
                 st.error(f"Error generating forecast: {str(e)}")
     
@@ -423,10 +360,7 @@ if st.session_state.data is not None:
             with col2:
                 st.metric("State", f"State {current_state}")
             with col3:
-                if isinstance(probability, (int, float)):
-                    st.metric("Confidence", f"{probability:.1%}")
-                else:
-                    st.metric("Confidence", "N/A")
+                st.metric("Confidence", f"{probability:.1%}")
             
             # State visualization
             fig_states = make_subplots(rows=2, cols=1, shared_xaxes=True,
@@ -477,17 +411,11 @@ if st.session_state.data is not None:
             st.subheader("State Statistics")
             state_df = pd.DataFrame(state_stats).T
             state_df.index.name = 'State'
-            
-            # Safe formatting for state statistics
-            format_dict = {}
-            if 'mean' in state_df.columns:
-                format_dict['mean'] = '{:.2%}'
-            if 'std' in state_df.columns:
-                format_dict['std'] = '{:.2%}'
-            if 'stationary_prob' in state_df.columns:
-                format_dict['stationary_prob'] = '{:.1%}'
-                
-            st.dataframe(state_df.style.format(format_dict))
+            st.dataframe(state_df.style.format({
+                'mean': '{:.2%}',
+                'std': '{:.2%}',
+                'stationary_prob': '{:.1%}'
+            }))
             
         except Exception as e:
             st.error(f"Error in regime analysis: {str(e)}")
@@ -525,25 +453,14 @@ if st.session_state.data is not None:
                 anomaly_col=anomaly_col
             )
             
-            # Display statistics with safe formatting
+            # Display statistics
             col1, col2, col3 = st.columns(3)
             with col1:
-                if 'anomaly_count' in anomaly_stats:
-                    st.metric("Total Anomalies", anomaly_stats['anomaly_count'])
-                else:
-                    st.metric("Total Anomalies", "N/A")
-                    
+                st.metric("Total Anomalies", anomaly_stats['anomaly_count'])
             with col2:
-                if 'anomaly_percentage' in anomaly_stats:
-                    st.metric("Anomaly Rate", f"{anomaly_stats['anomaly_percentage']:.1f}%")
-                else:
-                    st.metric("Anomaly Rate", "N/A")
-                    
+                st.metric("Anomaly Rate", f"{anomaly_stats['anomaly_percentage']:.1f}%")
             with col3:
-                if 'consecutive_anomalies' in anomaly_stats:
-                    st.metric("Max Consecutive", anomaly_stats['consecutive_anomalies'])
-                else:
-                    st.metric("Max Consecutive", "N/A")
+                st.metric("Max Consecutive", anomaly_stats['consecutive_anomalies'])
             
             # Anomaly visualization
             fig_anomaly = go.Figure()
@@ -557,16 +474,14 @@ if st.session_state.data is not None:
             ))
             
             # Anomalies
-            if anomaly_col in anomaly_data.columns:
-                anomaly_mask = anomaly_data[anomaly_col]
-                if anomaly_mask.sum() > 0:
-                    fig_anomaly.add_trace(go.Scatter(
-                        x=anomaly_data.index[anomaly_mask],
-                        y=anomaly_data['Volatility'][anomaly_mask],
-                        mode='markers',
-                        name='Anomalies',
-                        marker=dict(color='red', size=10, symbol='x')
-                    ))
+            anomaly_mask = anomaly_data[anomaly_col]
+            fig_anomaly.add_trace(go.Scatter(
+                x=anomaly_data.index[anomaly_mask],
+                y=anomaly_data['Volatility'][anomaly_mask],
+                mode='markers',
+                name='Anomalies',
+                marker=dict(color='red', size=10, symbol='x')
+            ))
             
             fig_anomaly.update_layout(
                 title="Volatility Anomalies",
@@ -577,25 +492,13 @@ if st.session_state.data is not None:
             st.plotly_chart(fig_anomaly, use_container_width=True)
             
             # Recent anomalies table
-            if 'anomaly_count' in anomaly_stats and anomaly_stats['anomaly_count'] > 0:
+            if anomaly_stats['anomaly_count'] > 0:
                 st.subheader("Recent Anomalies")
-                if anomaly_col in anomaly_data.columns:
-                    anomaly_mask = anomaly_data[anomaly_col]
-                    recent_anomalies = anomaly_data[anomaly_mask].tail(10)
-                    
-                    # Select columns that exist
-                    display_cols = ['Volatility']
-                    if 'Z_Score' in recent_anomalies.columns:
-                        display_cols.append('Z_Score')
-                        
-                    # Format with checks
-                    format_dict = {}
-                    if 'Volatility' in display_cols:
-                        format_dict['Volatility'] = '{:.2%}'
-                    if 'Z_Score' in display_cols:
-                        format_dict['Z_Score'] = '{:.2f}'
-                        
-                    st.dataframe(recent_anomalies[display_cols].style.format(format_dict))
+                recent_anomalies = anomaly_data[anomaly_mask].tail(10)
+                st.dataframe(recent_anomalies[['Volatility', 'Z_Score']].style.format({
+                    'Volatility': '{:.2%}',
+                    'Z_Score': '{:.2f}'
+                }))
             
         except Exception as e:
             st.error(f"Error in anomaly detection: {str(e)}")
@@ -663,16 +566,13 @@ if st.session_state.data is not None:
                         # Cluster characteristics
                         st.subheader("Cluster Characteristics")
                         stats_df = pd.DataFrame(cluster_stats).T
-                        
-                        # Format with checks
-                        format_dict = {}
-                        for col in stats_df.columns:
-                            if 'volatility' in col:
-                                format_dict[col] = '{:.2%}'
-                            elif 'return' in col:
-                                format_dict[col] = '{:.4f}'
-                        
-                        st.dataframe(stats_df.style.format(format_dict))
+                        st.dataframe(stats_df.style.format({
+                            'avg_volatility': '{:.2%}',
+                            'std_volatility': '{:.2%}',
+                            'median_volatility': '{:.2%}',
+                            'avg_return': '{:.4f}',
+                            'std_return': '{:.4f}'
+                        }))
                     else:
                         st.warning("Insufficient data for clustering analysis")
                     
@@ -711,3 +611,11 @@ st.markdown("""
     <p>Crypto Volatility Analysis Dashboard | Built with Streamlit</p>
 </div>
 """, unsafe_allow_html=True)
+
+def main():
+    """Main entry point for the Streamlit app."""
+    # The app is already running above, so this function is now just a wrapper
+    pass
+
+if __name__ == "__main__":
+    main()
