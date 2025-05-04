@@ -86,17 +86,17 @@ def main():
         st.session_state.selected_ticker = TICKERS[0]
 
     tab_labels = [
-        "📈 Overview", 
-        "🔮 Forecasting", 
-        "📊 Regime Analysis",
-        "⚠️ Anomaly Detection",
-        "🧮 Clustering",
-        "📋 Data Exploration"
+        "Overview", 
+        "Forecasting", 
+        "Regime Analysis",
+        "Anomaly Detection",
+        "Clustering",
+        "Data Exploration"
     ]
 
-    tabs = st.tabs(tab_labels)
-
-    tab1, tab2, tab3, tab4, tab5, tab6 = tabs
+    # Remove the check for len(tabs) == 6 and directly unpack
+    # If the number of tabs does not match, Streamlit will raise an error, which is more informative for debugging.
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(tab_labels)
 
     # Title and description
     st.title("🚀 Crypto Volatility Analysis Dashboard")
