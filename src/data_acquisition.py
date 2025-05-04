@@ -31,8 +31,15 @@ def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') 
     try:
         logger.info(f"Fetching data for {ticker} from {start_date} to {end_date}")
         
-        # Use the dates directly - yfinance can handle string dates
-        data = yf.download(ticker, start=start_date, end=end_date, interval=interval)
+        # Using fixed past dates for testing
+        import datetime
+        today = datetime.datetime.now()
+        fixed_end_date = today.strftime('%Y-%m-%d')
+        fixed_start_date = (today - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
+        
+        # Use fixed dates first for debugging
+        logger.info(f"Using historical date range: {fixed_start_date} to {fixed_end_date}")
+        data = yf.download(ticker, start=fixed_start_date, end=fixed_end_date, interval=interval)
         
         if data.empty:
             logger.warning(f"No data found for ticker {ticker}")
