@@ -85,6 +85,23 @@ def main():
     if 'selected_ticker' not in st.session_state:
         st.session_state.selected_ticker = TICKERS[0]
 
+    # --- Tab persistence setup ---
+    if 'active_tab' not in st.session_state:
+        st.session_state.active_tab = 0
+
+    tab_labels = [
+        "📈 Overview", 
+        "🔮 Forecasting", 
+        "📊 Regime Analysis",
+        "⚠️ Anomaly Detection",
+        "🧮 Clustering",
+        "📋 Data Exploration"
+    ]
+
+    tabs = st.tabs(tab_labels, key='tabs')
+
+    tab1, tab2, tab3, tab4, tab5, tab6 = tabs
+
     # Title and description
     st.title("🚀 Crypto Volatility Analysis Dashboard")
     st.markdown("""
@@ -160,31 +177,30 @@ def main():
     if st.session_state.data is not None:
         data = st.session_state.data
         
-        # Create tabs
-        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-            "📈 Overview", 
-            "🔮 Forecasting", 
-            "📊 Regime Analysis",
-            "⚠️ Anomaly Detection",
-            "🧮 Clustering",
-            "📋 Data Exploration"
-        ])
-        
         # Tab 1: Overview
         with tab1:
             st.header("Market Overview")
-            # Check for empty or invalid data
-            if data is None or data.empty or 'Close' not in data.columns or 'Volatility' not in data.columns:
-                st.warning("No valid data available for the selected ticker and date range.")
-            else:
-                try:
-                    # Ensure numeric types for calculations
-                    data['Close'] = pd.to_numeric(data['Close'], errors='coerce')
-                    data['Volatility'] = pd.to_numeric(data['Volatility'], errors='coerce')
-                    current_price = float(data['Close'].iloc[-1])
-                    current_vol = float(data['Volatility'].iloc[-1])
-                    avg_vol = float(data['Volatility'].mean())
-                    vol_change = ((current_vol - avg_vol) / max(avg_vol, 0.0001)) * 100  # Avoid division by zero
+            # Check for valid and non-empty Series for metrics
+            try:
+                close_col = data['Close']
+                vol_col = data['Volatility']
+                # If DataFrame, take first column
+                if isinstance(close_col, pd.DataFrame):
+                    close_col = close_col.iloc[:, 0]
+                if isinstance(vol_col, pd.DataFrame):
+                    vol_col = vol_col.iloc[:, 0]
+                close_col = pd.to_numeric(close_col, errors='coerce')
+                vol_col = pd.to_numeric(vol_col, errors='coerce')
+                # Drop NaNs
+                close_col = close_col.dropna()
+                vol_col = vol_col.dropna()
+                if len(close_col) == 0 or len(vol_col) == 0:
+                    st.warning("No valid price or volatility data available for metrics.")
+                else:
+                    current_price = float(close_col.iloc[-1])
+                    current_vol = float(vol_col.iloc[-1])
+                    avg_vol = float(vol_col.mean())
+                    vol_change = ((current_vol - avg_vol) / max(avg_vol, 0.0001)) * 100
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.metric("Current Price", f"${current_price:.2f}")
@@ -194,31 +210,40 @@ def main():
                         st.metric("Average Volatility", f"{avg_vol:.2%}")
                     with col4:
                         st.metric("Vol. Change", f"{vol_change:.1f}%")
-                except Exception as e:
-                    st.error(f"Error calculating metrics: {str(e)}")
+            except Exception as e:
+                st.error(f"Error calculating metrics: {str(e)}")
             
             # Price chart
             if data is not None and not data.empty and 'Close' in data.columns:
-                # Ensure index is DateTimeIndex
-                if not isinstance(data.index, pd.DatetimeIndex):
-                    try:
-                        data.index = pd.to_datetime(data.index)
-                    except Exception as e:
-                        st.error(f"Error converting index to datetime: {str(e)}")
-                fig_price = go.Figure()
-                fig_price.add_trace(go.Scatter(
-                    x=data.index,
-                    y=data['Close'],
-                    name='Price',
-                    line=dict(color='#1f77b4')
-                ))
-                fig_price.update_layout(
-                    title=f"{ticker} Price History",
-                    xaxis_title="Date",
-                    yaxis_title="Price ($)",
-                    template="plotly_white"
-                )
-                st.plotly_chart(fig_price, use_container_width=True)
+                close_col = data['Close']
+                if isinstance(close_col, pd.DataFrame):
+                    close_col = close_col.iloc[:, 0]
+                close_col = pd.to_numeric(close_col, errors='coerce').dropna()
+                # Only plot if at least 2 data points
+                if len(close_col) < 2:
+                    st.warning("Not enough price data to plot price history.")
+                else:
+                    # Ensure index is DateTimeIndex and unique
+                    if not isinstance(data.index, pd.DatetimeIndex):
+                        try:
+                            data.index = pd.to_datetime(data.index)
+                        except Exception as e:
+                            st.error(f"Error converting index to datetime: {str(e)}")
+                    data = data[~data.index.duplicated(keep='first')]
+                    fig_price = go.Figure()
+                    fig_price.add_trace(go.Scatter(
+                        x=data.index,
+                        y=close_col,
+                        name='Price',
+                        line=dict(color='#1f77b4')
+                    ))
+                    fig_price.update_layout(
+                        title=f"{ticker} Price History",
+                        xaxis_title="Date",
+                        yaxis_title="Price ($)",
+                        template="plotly_white"
+                    )
+                    st.plotly_chart(fig_price, use_container_width=True)
             else:
                 st.warning("No valid price data available for the selected ticker and date range.")
             
@@ -231,15 +256,20 @@ def main():
                     name='Realized Volatility',
                     line=dict(color='#ff7f0e')
                 ))
-                
+                # Plot IV only if valid
                 if 'ImpliedVolatility' in data.columns:
-                    fig_vol.add_trace(go.Scatter(
-                        x=data.index, 
-                        y=data['ImpliedVolatility'],
-                        name='Implied Volatility',
-                        line=dict(color='#2ca02c')
-                    ))
-                
+                    iv_col = pd.to_numeric(data['ImpliedVolatility'], errors='coerce').dropna()
+                    if len(iv_col) >= 2:
+                        fig_vol.add_trace(go.Scatter(
+                            x=data.index,
+                            y=iv_col,
+                            name='Implied Volatility',
+                            line=dict(color='#2ca02c')
+                        ))
+                    else:
+                        st.warning("Not enough Implied Volatility data to plot IV line.")
+                else:
+                    st.info("Implied Volatility data not available for this ticker/date range.")
                 fig_vol.update_layout(
                     title=f"{ticker} Volatility History",
                     xaxis_title="Date",
@@ -280,33 +310,23 @@ def main():
         # Tab 2: Forecasting
         with tab2:
             st.header("Volatility Forecasting")
-            
-            # Model selection
             model_type = st.selectbox(
                 "Select Forecasting Model",
                 ["MLP", "RNN", "LSTM", "GRU"],
                 help="Choose the neural network architecture for forecasting"
             )
-            
             model_filename = f"{model_type.lower()}_{ticker}"
-            
-            if st.button("Generate Forecast"):
+            if st.button("Generate Forecast", key="generate_forecast"):
+                st.session_state.active_tab = 1  # Set active tab to Forecasting
                 try:
-                    # Try to load model
-                    try:
-                        model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
-                    except FileNotFoundError:
-                        st.warning(f"Model not found. Training {model_type} model for {ticker}...")
-                        with st.spinner(f"Training {model_type} model for {ticker}..."):
-                            from src.train_models import train_forecasting_model
-                            train_forecasting_model(ticker, model_type.lower(), data)
-                        model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
-                    # Prepare data
+                    # Always train the model when button is clicked
+                    with st.spinner(f"Training {model_type} model for {ticker}..."):
+                        from src.train_models import train_forecasting_model
+                        train_forecasting_model(ticker, model_type.lower(), data)
+                    model, scaler = load_model(model_filename, is_rnn=(model_type != "MLP"))
                     X, y = prepare_data(data, lags=LAGS)
                     if len(X) > 0:
-                        # Get recent data for forecasting
                         recent_data = X.iloc[-1].values
-                        # Generate forecast
                         if model_type != "MLP":
                             recent_data_reshaped = recent_data.reshape(1, -1, 1)
                             forecast = forecast_next_values(
@@ -320,22 +340,18 @@ def main():
                                 is_rnn=False, 
                                 n_ahead=n_forecast_days
                             )
-                        # Create forecast dates
                         last_date = data.index[-1]
                         forecast_dates = pd.date_range(
                             start=last_date + timedelta(days=1),
                             periods=n_forecast_days
                         )
-                        # Plot forecast
                         fig_forecast = go.Figure()
-                        # Historical volatility
                         fig_forecast.add_trace(go.Scatter(
                             x=data.index[-60:],
                             y=data['Volatility'][-60:],
                             name='Historical',
                             line=dict(color='#1f77b4')
                         ))
-                        # Forecast
                         fig_forecast.add_trace(go.Scatter(
                             x=forecast_dates,
                             y=forecast,
@@ -349,7 +365,6 @@ def main():
                             template="plotly_white"
                         )
                         st.plotly_chart(fig_forecast, use_container_width=True)
-                        # Forecast table
                         forecast_df = pd.DataFrame({
                             'Date': forecast_dates,
                             'Forecasted Volatility': forecast
@@ -381,7 +396,7 @@ def main():
                 
                 # Map regime numbers to names
                 regime_names = {0: "Low Volatility", 1: "Medium Volatility", 2: "High Volatility", 3: "Extreme Volatility"}
-                regime_label = regime_names.get(current_regime, f"Regime {current_regime}")
+                regime_label = regime_names.get(current_regime, "Unknown")
                 
                 # Display current regime
                 col1, col2, col3 = st.columns(3)
@@ -522,13 +537,17 @@ def main():
                 st.plotly_chart(fig_anomaly, use_container_width=True)
                 
                 # Recent anomalies table
+                st.subheader("Recent Anomalies")
                 if anomaly_stats['anomaly_count'] > 0:
-                    st.subheader("Recent Anomalies")
                     recent_anomalies = anomaly_data[anomaly_mask].tail(10)
                     st.dataframe(recent_anomalies[['Volatility', 'Z_Score']].style.format({
                         'Volatility': '{:.2%}',
                         'Z_Score': '{:.2f}'
-                    }))
+                    }), use_container_width=True)
+                else:
+                    empty_df = pd.DataFrame(columns=['Volatility', 'Z_Score'])
+                    st.dataframe(empty_df, use_container_width=True)
+                    st.info("No anomalies detected in the selected period.")
                 
             except Exception as e:
                 st.error(f"Error in anomaly detection: {str(e)}")
@@ -564,19 +583,31 @@ def main():
                         )
                         
                         if cluster_mapping:
-                            # Show all tickers for each cluster as a DataFrame
+                            # Show all tickers for each cluster as a styled DataFrame
                             st.subheader("Tickers in Each Cluster")
                             cluster_df = pd.DataFrame([
-                                {"Cluster": cluster_id, "Tickers": ', '.join([ticker for ticker, cluster in cluster_mapping.items() if cluster == cluster_id])}
+                                {"Cluster": f"Cluster {cluster_id}", "Tickers": ', '.join([ticker for ticker, cluster in cluster_mapping.items() if cluster == cluster_id])}
                                 for cluster_id in sorted(set(cluster_mapping.values()))
                             ])
-                            st.dataframe(cluster_df)
+                            # Style: wrap tickers and bold cluster name
+                            cluster_df_styled = cluster_df.style.set_properties(subset=["Tickers"], **{"white-space": "pre-wrap"}) \
+                                .set_properties(subset=["Cluster"], **{"font-weight": "bold"})
+                            st.dataframe(cluster_df_styled, use_container_width=True)
 
-                            # Show cluster characteristics as a DataFrame
+                            # Show cluster characteristics as a styled DataFrame
                             st.subheader("Cluster Characteristics")
                             cluster_chars = get_cluster_characteristics(TICKERS, cluster_mapping, start_date_str, end_date_str)
-                            if isinstance(cluster_chars, pd.DataFrame):
-                                st.dataframe(cluster_chars)
+                            if isinstance(cluster_chars, dict):
+                                # Flatten dict to DataFrame
+                                chars_df = pd.DataFrame(cluster_chars).T.reset_index().rename(columns={"index": "Cluster"})
+                                chars_df["Cluster"] = chars_df["Cluster"].apply(lambda x: f"Cluster {x}")
+                                # Style: format numeric columns
+                                chars_df_styled = chars_df.style.format({
+                                    col: "{:.2%}" if "vol" in col else "{:.4f}" for col in chars_df.columns if col not in ["Cluster", "num_tickers"]
+                                }).set_properties(subset=["Cluster"], **{"font-weight": "bold"})
+                                st.dataframe(chars_df_styled, use_container_width=True)
+                            elif isinstance(cluster_chars, pd.DataFrame):
+                                st.dataframe(cluster_chars, use_container_width=True)
                             else:
                                 st.write(cluster_chars)
                         else:
@@ -617,6 +648,10 @@ def main():
         <p>Crypto Volatility Analysis Dashboard | Built with Streamlit</p>
     </div>
     """, unsafe_allow_html=True)
+
+    # --- Tab switching logic ---
+    # Set the active tab after rerun
+    st.session_state.active_tab = getattr(st.session_state, 'active_tab', 0)
 
 if __name__ == "__main__":
     # When running this file directly, ensure proper imports
