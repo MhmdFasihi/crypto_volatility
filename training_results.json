@@ -1,6 +1,8 @@
 {
   "BTC-USD": {
+    "ticker": "BTC-USD",
+    "timestamp": "2025-05-04T18:53:09.852662",
     "status": "failed",
-    "error": "unsupported operand type(s) for /: 'str' and 'str'"
+    "reason": "no_data"
   }
 }
