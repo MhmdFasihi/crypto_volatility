@@ -4,20 +4,13 @@ Data preprocessing module for calculating returns and volatility metrics.
 
 import numpy as np
 import pandas as pd
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Dict, Any
 import logging
-import os
+from pathlib import Path
+from .config import config
+from .logger import get_logger
 
-# Import from config file
-try:
-    from src.config import VOL_WINDOW, ANNUALIZATION_FACTOR
-except ImportError:
-    # Default values if config import fails
-    VOL_WINDOW = 30
-    ANNUALIZATION_FACTOR = 365
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFrame:
     """
@@ -29,14 +22,16 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     
     Returns:
         DataFrame with 'Returns' column added
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to calculate_returns")
         return pd.DataFrame()
     
     if price_col not in data.columns:
-        logger.error(f"Column '{price_col}' not found in DataFrame")
-        return data
+        raise ValueError(f"Column '{price_col}' not found in DataFrame")
     
     data = data.copy()
     
@@ -49,55 +44,62 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     logger.info(f"Calculated returns. NaN values: {data['Returns'].isna().sum()}")
     return data
 
-def calculate_volatility(data: pd.DataFrame, window: int = VOL_WINDOW, 
+def calculate_volatility(data: pd.DataFrame, window: Optional[int] = None, 
                         returns_col: str = 'Returns') -> pd.DataFrame:
     """
     Calculate realized volatility as rolling standard deviation of returns.
     
     Args:
         data: DataFrame with returns data
-        window: Rolling window size
+        window: Rolling window size (default: from config)
         returns_col: Column name for returns
     
     Returns:
         DataFrame with 'Volatility' column added
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to calculate_volatility")
         return pd.DataFrame()
     
     if returns_col not in data.columns:
-        logger.error(f"Column '{returns_col}' not found in DataFrame")
-        return data
+        raise ValueError(f"Column '{returns_col}' not found in DataFrame")
     
     data = data.copy()
+    window = window or config.get('vol_window')
     
     # Ensure returns are numeric
     data[returns_col] = pd.to_numeric(data[returns_col], errors='coerce')
     
     # Calculate rolling volatility and annualize
-    ann_factor = float(ANNUALIZATION_FACTOR)  # Ensure numeric
+    ann_factor = float(config.get('annualization_factor'))
     data['Volatility'] = data[returns_col].rolling(window=int(window)).std() * np.sqrt(ann_factor)
     
     logger.info(f"Calculated volatility with window={window}. NaN values: {data['Volatility'].isna().sum()}")
     return data
 
-def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: int = VOL_WINDOW) -> pd.DataFrame:
+def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: Optional[int] = None) -> pd.DataFrame:
     """
     Calculate advanced volatility metrics including Parkinson, Garman-Klass, etc.
     
     Args:
         data: DataFrame with OHLC data
-        window: Rolling window size
+        window: Rolling window size (default: from config)
     
     Returns:
         DataFrame with additional volatility metrics
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to calculate_advanced_volatility_metrics")
         return pd.DataFrame()
     
     data = data.copy()
+    window = window or config.get('vol_window')
     
     # Ensure OHLC data is numeric
     for col in ['Open', 'High', 'Low', 'Close']:
@@ -109,7 +111,7 @@ def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: int = VOL_
         data['Parkinson_Vol'] = np.sqrt(
             1 / (4 * np.log(2)) * 
             ((np.log(data['High'] / data['Low']) ** 2).rolling(window=int(window)).mean())
-        ) * np.sqrt(float(ANNUALIZATION_FACTOR))
+        ) * np.sqrt(float(config.get('annualization_factor')))
         logger.info("Calculated Parkinson volatility")
     
     # Garman-Klass volatility
@@ -117,7 +119,7 @@ def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: int = VOL_
         data['GK_Vol'] = np.sqrt(
             (0.5 * (np.log(data['High'] / data['Low']) ** 2) -
              (2 * np.log(2) - 1) * (np.log(data['Close'] / data['Open']) ** 2)).rolling(window=int(window)).mean()
-        ) * np.sqrt(float(ANNUALIZATION_FACTOR))
+        ) * np.sqrt(float(config.get('annualization_factor')))
         logger.info("Calculated Garman-Klass volatility")
     
     # Rogers-Satchell volatility
@@ -129,10 +131,10 @@ def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: int = VOL_
             
             data['RS_Vol'] = np.sqrt(
                 (hl * (hl - co) + co * (co - oc)).rolling(window=int(window)).mean()
-            ) * np.sqrt(float(ANNUALIZATION_FACTOR))
+            ) * np.sqrt(float(config.get('annualization_factor')))
             logger.info("Calculated Rogers-Satchell volatility")
         except Exception as e:
-            logger.error(f"Error calculating Rogers-Satchell volatility: {e}")
+            logger.error(f"Error calculating Rogers-Satchell volatility: {str(e)}")
     
     return data
 
@@ -148,6 +150,9 @@ def calculate_volatility_ratio(data: pd.DataFrame, short_window: int = 10,
     
     Returns:
         DataFrame with volatility ratio
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to calculate_volatility_ratio")
@@ -159,15 +164,15 @@ def calculate_volatility_ratio(data: pd.DataFrame, short_window: int = 10,
         if 'Close' in data.columns:
             data = calculate_returns(data)
         else:
-            logger.error("Required columns missing for volatility ratio calculation")
-            return data
+            raise ValueError("Required columns missing for volatility ratio calculation")
     
     # Ensure returns are numeric
     data['Returns'] = pd.to_numeric(data['Returns'], errors='coerce')
     
     # Calculate short and long-term volatility
-    short_vol = data['Returns'].rolling(window=int(short_window)).std() * np.sqrt(float(ANNUALIZATION_FACTOR))
-    long_vol = data['Returns'].rolling(window=int(long_window)).std() * np.sqrt(float(ANNUALIZATION_FACTOR))
+    ann_factor = float(config.get('annualization_factor'))
+    short_vol = data['Returns'].rolling(window=int(short_window)).std() * np.sqrt(ann_factor)
+    long_vol = data['Returns'].rolling(window=int(long_window)).std() * np.sqrt(ann_factor)
     
     # Calculate ratio - handle division by zero
     data['Vol_Ratio'] = short_vol / long_vol.replace(0, np.nan)
@@ -187,6 +192,9 @@ def calculate_iv_rv_spread(data: pd.DataFrame, iv_col: str = 'ImpliedVolatility'
     
     Returns:
         DataFrame with IV-RV spread
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to calculate_iv_rv_spread")
@@ -221,6 +229,9 @@ def preprocess_for_modeling(data: pd.DataFrame, target_col: str = 'Volatility',
     
     Returns:
         Preprocessed DataFrame ready for modeling
+    
+    Raises:
+        ValueError: If required columns are missing or data is empty
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to preprocess_for_modeling")
@@ -230,8 +241,7 @@ def preprocess_for_modeling(data: pd.DataFrame, target_col: str = 'Volatility',
     
     # Ensure target column exists
     if target_col not in data.columns:
-        logger.error(f"Target column '{target_col}' not found in DataFrame")
-        return data
+        raise ValueError(f"Target column '{target_col}' not found in DataFrame")
     
     # Remove rows with NaN in target
     data = data.dropna(subset=[target_col])
@@ -248,26 +258,21 @@ def preprocess_for_modeling(data: pd.DataFrame, target_col: str = 'Volatility',
             data[col] = pd.to_numeric(data[col], errors='coerce')
     
     # Forward fill then backward fill remaining NaNs
-    data[features] = data[features].fillna(method='ffill').fillna(method='bfill')
+    data = data.fillna(method='ffill').fillna(method='bfill')
     
-    # Drop rows with any remaining NaNs
-    initial_len = len(data)
-    data = data.dropna(subset=features + [target_col])
-    
-    logger.info(f"Preprocessing complete. Dropped {initial_len - len(data)} rows with NaNs")
-    
+    logger.info(f"Preprocessed data for modeling. Shape: {data.shape}")
     return data
 
 def create_volatility_features(data: pd.DataFrame, lags: int = 5) -> pd.DataFrame:
     """
-    Create lagged volatility features for forecasting.
+    Create lagged and moving average features for volatility.
     
     Args:
-        data: DataFrame with volatility
-        lags: Number of lags to create
+        data: DataFrame with volatility data
+        lags: Number of lagged features to create
     
     Returns:
-        DataFrame with lagged features
+        DataFrame with additional features
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to create_volatility_features")
@@ -275,40 +280,32 @@ def create_volatility_features(data: pd.DataFrame, lags: int = 5) -> pd.DataFram
     
     data = data.copy()
     
-    if 'Volatility' not in data.columns:
-        logger.error("'Volatility' column not found in DataFrame")
-        return data
-    
-    # Ensure volatility is numeric
-    data['Volatility'] = pd.to_numeric(data['Volatility'], errors='coerce')
-    
-    # Create lag features
-    for i in range(1, int(lags) + 1):
+    # Create lagged features
+    for i in range(1, lags + 1):
         data[f'Vol_Lag_{i}'] = data['Volatility'].shift(i)
     
-    # Add moving averages
+    # Create moving averages
     for window in [5, 10, 20]:
         data[f'Vol_MA_{window}'] = data['Volatility'].rolling(window=window).mean()
+        data[f'Vol_EMA_{window}'] = data['Volatility'].ewm(span=window).mean()
     
-    # Add exponential moving averages
-    for span in [5, 10, 20]:
-        data[f'Vol_EMA_{span}'] = data['Volatility'].ewm(span=span, adjust=False).mean()
-    
-    logger.info(f"Created {lags} lagged features and moving averages")
-    
+    logger.info(f"Created volatility features with {lags} lags")
     return data
 
 def normalize_features(data: pd.DataFrame, features: List[str], method: str = 'zscore') -> pd.DataFrame:
     """
-    Normalize features for better model performance.
+    Normalize features using specified method.
     
     Args:
         data: DataFrame with features
-        features: List of features to normalize
+        features: List of feature columns to normalize
         method: Normalization method ('zscore' or 'minmax')
     
     Returns:
         DataFrame with normalized features
+    
+    Raises:
+        ValueError: If method is invalid or features are missing
     """
     if data is None or data.empty:
         logger.warning("Empty data provided to normalize_features")
@@ -316,31 +313,23 @@ def normalize_features(data: pd.DataFrame, features: List[str], method: str = 'z
     
     data = data.copy()
     
+    # Validate features
+    missing_features = [f for f in features if f not in data.columns]
+    if missing_features:
+        raise ValueError(f"Features not found in DataFrame: {missing_features}")
+    
+    # Normalize features
     for feature in features:
-        if feature in data.columns:
-            # Ensure feature is numeric
-            data[feature] = pd.to_numeric(data[feature], errors='coerce')
-            
-            if method == 'zscore':
-                # Z-score normalization (mean=0, std=1)
-                mean = data[feature].mean()
-                std = data[feature].std()
-                if std > 0:  # Avoid division by zero
-                    data[f'{feature}_norm'] = (data[feature] - mean) / std
-                else:
-                    data[f'{feature}_norm'] = 0
-            elif method == 'minmax':
-                # Min-max normalization (range [0,1])
-                min_val = data[feature].min()
-                max_val = data[feature].max()
-                range_val = max_val - min_val
-                if range_val > 0:  # Avoid division by zero
-                    data[f'{feature}_norm'] = (data[feature] - min_val) / range_val
-                else:
-                    data[f'{feature}_norm'] = 0
-            else:
-                raise ValueError(f"Unknown normalization method: {method}")
+        if method == 'zscore':
+            mean = data[feature].mean()
+            std = data[feature].std()
+            data[f'{feature}_norm'] = (data[feature] - mean) / std
+        elif method == 'minmax':
+            min_val = data[feature].min()
+            max_val = data[feature].max()
+            data[f'{feature}_norm'] = (data[feature] - min_val) / (max_val - min_val)
+        else:
+            raise ValueError(f"Invalid normalization method: {method}")
     
     logger.info(f"Normalized {len(features)} features using {method} method")
-    
     return data
