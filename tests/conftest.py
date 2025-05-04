@@ -5,85 +5,20 @@ Test configuration and fixtures for the crypto volatility analysis system.
 import pytest
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 from pathlib import Path
 import os
-import sys
-
-# Add the src directory to the path
-sys.path.append(str(Path(__file__).parent.parent))
-
-from src.config import config
-from src.logger import setup_logging
-
-# Set up logging for tests
-setup_logging(log_level='INFO', log_dir='tests/logs')
-
-@pytest.fixture(scope='session')
-def test_data_dir():
-    """Create and return test data directory."""
-    data_dir = Path('tests/data')
-    data_dir.mkdir(parents=True, exist_ok=True)
-    return data_dir
-
-@pytest.fixture(scope='session')
-def sample_price_data():
-    """Create sample price data for testing."""
-    dates = pd.date_range(start='2024-01-01', end='2024-01-10', freq='D')
-    data = pd.DataFrame({
-        'Open': [100, 101, 102, 103, 104, 105, 106, 107, 108, 109],
-        'High': [102, 103, 104, 105, 106, 107, 108, 109, 110, 111],
-        'Low': [98, 99, 100, 101, 102, 103, 104, 105, 106, 107],
-        'Close': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
-        'Volume': [1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
-    }, index=dates)
-    return data
-
-@pytest.fixture(scope='session')
-def sample_volatility_data():
-    """Create sample volatility data for testing."""
-    dates = pd.date_range(start='2024-01-01', end='2024-01-10', freq='D')
-    data = pd.DataFrame({
-        'Volatility': [0.20, 0.22, 0.19, 0.21, 0.23, 0.25, 0.24, 0.22, 0.20, 0.18],
-        'ImpliedVolatility': [0.22, 0.24, 0.21, 0.23, 0.25, 0.27, 0.26, 0.24, 0.22, 0.20]
-    }, index=dates)
-    return data
-
-@pytest.fixture(scope='session')
-def sample_returns_data(sample_price_data):
-    """Create sample returns data for testing."""
-    data = sample_price_data.copy()
-    data['Returns'] = np.log(data['Close'] / data['Close'].shift(1))
-    return data
-
-@pytest.fixture(scope='session')
-def mock_api_response():
-    """Create mock API response data."""
-    return {
-        'result': {
-            'trades': [
-                {
-                    'instrument_name': 'BTC-31DEC24-50000-C',
-                    'price': 50000,
-                    'mark_price': 50100,
-                    'iv': 0.75,
-                    'index_price': 50000,
-                    'direction': 'buy',
-                    'amount': 1,
-                    'timestamp': int(datetime.now().timestamp() * 1000)
-                }
-            ]
-        }
-    }
+import json
+from datetime import datetime, timedelta
+from src.config import Config, config
 
 @pytest.fixture(scope='session')
 def test_config():
-    """Create test configuration."""
+    """Test configuration fixture."""
     return {
         'data_dir': 'tests/data',
         'models_dir': 'tests/models',
         'logs_dir': 'tests/logs',
-        'vol_window': 5,
+        'vol_window': 30,
         'annualization_factor': 365,
         'api': {
             'yfinance': {
@@ -92,37 +27,84 @@ def test_config():
                 'retry_delay': 1
             },
             'deribit': {
-                'test_mode': True,
                 'rate_limit': 50,
                 'retry_attempts': 2,
-                'retry_delay': 1
+                'retry_delay': 1,
+                'test_mode': True
             }
+        },
+        'model': {
+            'default_window': 60,
+            'train_test_split': 0.8,
+            'validation_split': 0.2,
+            'random_state': 42
+        },
+        'logging': {
+            'level': 'INFO',
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            'max_size': 10485760,  # 10MB
+            'backup_count': 5
         }
     }
 
 @pytest.fixture(autouse=True)
 def setup_test_env(monkeypatch, test_config):
     """Set up test environment variables."""
-    # Set test configuration
-    for key, value in test_config.items():
-        monkeypatch.setattr(config, key, value)
-    
-    # Set test environment variables
-    monkeypatch.setenv('TESTING', 'True')
-    monkeypatch.setenv('DEBUG', 'False')
-    monkeypatch.setenv('LOG_LEVEL', 'INFO')
-    
     # Create test directories
-    for dir_name in ['data', 'models', 'logs']:
-        Path(f'tests/{dir_name}').mkdir(parents=True, exist_ok=True)
-    
+    for dir_name in ['data_dir', 'models_dir', 'logs_dir']:
+        os.makedirs(test_config[dir_name], exist_ok=True)
+
+    # Update configuration
+    config._config.update(test_config)
+
+    # Clean up after tests
     yield
-    
-    # Cleanup after tests
-    if os.getenv('CLEANUP_TEST_FILES', 'True').lower() == 'true':
-        for dir_name in ['data', 'models', 'logs']:
-            test_dir = Path(f'tests/{dir_name}')
-            if test_dir.exists():
-                for file in test_dir.glob('*'):
-                    if file.is_file():
-                        file.unlink() 
+    for dir_name in ['data_dir', 'models_dir', 'logs_dir']:
+        path = Path(test_config[dir_name])
+        if path.exists():
+            for file in path.glob('*'):
+                file.unlink()
+            path.rmdir()
+
+@pytest.fixture
+def sample_price_data():
+    """Generate sample price data for testing."""
+    dates = pd.date_range(start='2023-01-01', end='2023-12-31', freq='D')
+    np.random.seed(42)
+    prices = np.random.lognormal(mean=0.1, sigma=0.2, size=len(dates))
+    return pd.DataFrame({
+        'Date': dates,
+        'Close': prices,
+        'Volume': np.random.randint(1000, 10000, size=len(dates))
+    }).set_index('Date')
+
+@pytest.fixture
+def sample_volatility_data(sample_price_data):
+    """Generate sample volatility data for testing."""
+    returns = np.log(sample_price_data['Close']).diff()
+    volatility = returns.rolling(window=30).std() * np.sqrt(365)
+    return pd.DataFrame({
+        'Returns': returns,
+        'Volatility': volatility
+    })
+
+@pytest.fixture
+def sample_model_data():
+    """Generate sample data for model testing."""
+    X = np.random.randn(100, 5)
+    y = np.random.randn(100)
+    return X, y
+
+@pytest.fixture
+def sample_config_file(tmp_path):
+    """Create a sample configuration file."""
+    config_path = tmp_path / 'test_config.json'
+    config_data = {
+        'data_dir': 'test_data',
+        'models_dir': 'test_models',
+        'logs_dir': 'test_logs',
+        'vol_window': 30
+    }
+    with open(config_path, 'w') as f:
+        json.dump(config_data, f)
+    return config_path 

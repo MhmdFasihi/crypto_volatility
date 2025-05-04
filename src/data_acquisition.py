@@ -13,6 +13,7 @@ import time
 from functools import wraps
 import os
 from .logger import get_logger
+import numpy as np
 
 logger = get_logger(__name__)
 
@@ -45,28 +46,22 @@ def retry_on_failure(max_retries: int = 3, delay: int = 1):
 @retry_on_failure(max_retries=3)
 def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') -> pd.DataFrame:
     """
-    Fetch historical price data for a given ticker.
+    Fetch historical data for a crypto ticker.
     
     Args:
-        ticker: Crypto ticker (e.g., 'BTC-USD')
-        start_date: Start date (e.g., '2020-01-01')
-        end_date: End date (e.g., '2025-05-01')
-        interval: Data interval (e.g., '1d' for daily)
+        ticker: Crypto ticker
+        start_date: Start date
+        end_date: End date
+        interval: Data interval
     
     Returns:
-        DataFrame with price data
+        DataFrame with historical data
     """
     try:
-        logger.info(f"Fetching data for {ticker}", extra={
-            'ticker': ticker,
-            'start_date': start_date,
-            'end_date': end_date,
-            'interval': interval
-        })
-        
-        # Validate dates
+        # Convert dates to datetime
         start = pd.to_datetime(start_date)
         end = pd.to_datetime(end_date)
+        
         if start > end:
             raise ValueError("Start date must be before end date")
         
@@ -77,10 +72,15 @@ def get_data(ticker: str, start_date: str, end_date: str, interval: str = '1d') 
             logger.warning(f"No data found for ticker {ticker}")
             return pd.DataFrame()
         
-        # Ensure numeric columns are numeric
-        for col in ['Open', 'High', 'Low', 'Close', 'Volume']:
+        # Convert data to float type
+        numeric_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        for col in numeric_columns:
             if col in data.columns:
-                data[col] = pd.to_numeric(data[col], errors='coerce')
+                try:
+                    data[col] = data[col].astype(float)
+                except Exception as e:
+                    logger.warning(f"Error converting {col} to float: {str(e)}")
+                    data[col] = data[col].replace('', np.nan).astype(float)
         
         # Validate data
         if data.isnull().any().any():

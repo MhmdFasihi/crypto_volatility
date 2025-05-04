@@ -36,7 +36,11 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     data = data.copy()
     
     # Ensure price data is numeric
-    data[price_col] = pd.to_numeric(data[price_col], errors='coerce')
+    try:
+        data[price_col] = data[price_col].astype(float)
+    except Exception as e:
+        logger.warning(f"Error converting {price_col} to float: {str(e)}")
+        data[price_col] = data[price_col].replace('', np.nan).astype(float)
     
     # Calculate log returns
     data['Returns'] = np.log(data[price_col] / data[price_col].shift(1))
@@ -71,7 +75,11 @@ def calculate_volatility(data: pd.DataFrame, window: Optional[int] = None,
     window = window or config.get('vol_window')
     
     # Ensure returns are numeric
-    data[returns_col] = pd.to_numeric(data[returns_col], errors='coerce')
+    try:
+        data[returns_col] = data[returns_col].astype(float)
+    except Exception as e:
+        logger.warning(f"Error converting {returns_col} to float: {str(e)}")
+        data[returns_col] = data[returns_col].replace('', np.nan).astype(float)
     
     # Calculate rolling volatility and annualize
     ann_factor = float(config.get('annualization_factor'))
@@ -104,7 +112,11 @@ def calculate_advanced_volatility_metrics(data: pd.DataFrame, window: Optional[i
     # Ensure OHLC data is numeric
     for col in ['Open', 'High', 'Low', 'Close']:
         if col in data.columns:
-            data[col] = pd.to_numeric(data[col], errors='coerce')
+            try:
+                data[col] = data[col].astype(float)
+            except Exception as e:
+                logger.warning(f"Error converting {col} to float: {str(e)}")
+                data[col] = data[col].replace('', np.nan).astype(float)
     
     # Parkinson volatility (using High-Low range)
     if all(col in data.columns for col in ['High', 'Low']):
