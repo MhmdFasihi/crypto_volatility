@@ -12,14 +12,14 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from src.data_acquisition import get_data, get_combined_volatility_data
-from src.preprocessing import (
+from .data_acquisition import get_data, get_combined_volatility_data
+from .preprocessing import (
     calculate_returns, 
     calculate_volatility, 
     calculate_advanced_volatility_metrics,
     create_volatility_features
 )
-from src.forecasting import (
+from .forecasting import (
     prepare_data, 
     train_mlp, 
     train_rnn, 
@@ -27,14 +27,14 @@ from src.forecasting import (
     save_model,
     cross_validate_time_series
 )
-from src.classification import train_hmm, get_state_statistics
-from src.anomaly_detection import (
+from .classification import train_hmm, get_state_statistics
+from .anomaly_detection import (
     detect_anomalies_zscore,
     create_anomaly_features,
     train_random_forest_detector,
     evaluate_anomaly_detector
 )
-from src.config import (
+from .config import (
     TICKERS, VOL_WINDOW, LAGS, HMM_STATES,
     DEFAULT_START_DATE, DEFAULT_END_DATE,
     RANDOM_SEED, TEST_SIZE, MODEL_DIR

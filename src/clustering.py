@@ -12,9 +12,9 @@ import pandas as pd
 from typing import Dict, List, Tuple, Optional
 import logging
 import matplotlib.pyplot as plt
-from src.data_acquisition import get_data
-from src.preprocessing import calculate_returns, calculate_volatility
-from src.config import N_CLUSTERS, VOL_WINDOW, DEFAULT_START_DATE, DEFAULT_END_DATE
+from .data_acquisition import get_data
+from .preprocessing import calculate_returns, calculate_volatility
+from .config import N_CLUSTERS, VOL_WINDOW, DEFAULT_START_DATE, DEFAULT_END_DATE
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

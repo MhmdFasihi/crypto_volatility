@@ -20,7 +20,7 @@ import joblib
 import os
 import logging
 from typing import Tuple, Dict, Any, Optional, List
-from src.config import (
+from .config import (
     LAGS, MLP_HIDDEN_LAYERS, MLP_MAX_ITER, RNN_UNITS, 
     RNN_EPOCHS, RNN_BATCH_SIZE, RANDOM_SEED, TEST_SIZE,
     MODEL_DIR
