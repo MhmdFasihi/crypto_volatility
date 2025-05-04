@@ -37,6 +37,9 @@ def calculate_returns(data: pd.DataFrame, price_col: str = 'Close') -> pd.DataFr
     
     # Ensure price data is numeric
     try:
+        logger.debug(f"Type of data['{price_col}']: {type(data[price_col])}, shape: {getattr(data[price_col], 'shape', 'N/A')}")
+        if isinstance(data[price_col], pd.DataFrame):
+            data[price_col] = data[price_col].iloc[:, 0]
         data[price_col] = pd.to_numeric(data[price_col], errors='coerce')
     except Exception as e:
         logger.warning(f"Error converting {price_col} to float: {str(e)}")

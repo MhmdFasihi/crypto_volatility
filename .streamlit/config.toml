@@ -6,10 +6,6 @@ headless = true
 # Internet address where users should point their browsers in order to connect to the app.
 serverAddress = "0.0.0.0"
 
-[runner]
-# The command line command to run the Streamlit app
-command = "python -m streamlit run src/dashboard.py"
-
 [logger]
 level = "info"
 
@@ -19,10 +15,6 @@ backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F0F2F6"
 textColor = "#262730"
 font = "sans serif"
-
-[client]
-# Whether to enable st.cache.
-caching = true
 
 [global]
 developmentMode = false 

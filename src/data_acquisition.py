@@ -15,6 +15,7 @@ import requests
 import websockets
 import yfinance as yf
 from dotenv import load_dotenv
+import ssl
 
 from .config import config
 from .logger import get_logger
@@ -111,6 +112,9 @@ class DeribitAPI:
             await self._ws.send(json.dumps(request))
             response = await self._ws.recv()
             return json.loads(response)
+        except ssl.SSLError as ssl_err:
+            logger.error(f"SSL error in API request: {ssl_err}. If running locally, ensure your system certificates are up to date.")
+            raise
         except Exception as e:
             logger.error(f"Error in API request: {str(e)}")
             raise
